@@ -1,0 +1,1450 @@
+<!-- START OF FILE index.html -->
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel 2026</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PDF LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- EXCEL LIBRARY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Hind Siliguri', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+            min-height: 100vh;
+            padding-bottom: 90px; 
+            overflow-x: hidden; 
+            color: #333;
+        }
+        
+        /* --- LOGIN STYLES --- */
+        #loginSection { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            z-index: 9999; display: flex; justify-content: center; align-items: center; 
+        }
+        .login-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 40px 30px; border-radius: 20px; width: 90%; max-width: 380px; 
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            animation: zoomUp 0.6s ease-out;
+        }
+        @keyframes zoomUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .login-card h2 { margin-bottom: 25px; color: #2c3e50; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .login-card input { 
+            width: 100%; padding: 15px; margin-bottom: 15px; 
+            border: 2px solid #eee; border-radius: 10px; outline: none; 
+            background: #f9f9f9; transition: 0.3s; font-weight: 500;
+        }
+        .login-card input:focus { border-color: #3498db; background: #fff; }
+
+        .login-btn { 
+            width: 100%; padding: 15px; 
+            background: linear-gradient(to right, #2193b0, #6dd5ed); 
+            color: white; border: none; border-radius: 10px; 
+            font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(33, 147, 176, 0.4);
+        }
+        .login-btn:active { transform: scale(0.98); }
+        .login-error { color: #e74c3c; font-size: 13px; margin-top: 15px; display: none; font-weight: 600; }
+        
+        /* --- ADMIN PANEL HEADER --- */
+        #adminPanelContent { display: none; }
+
+        .top-header { 
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            color: white; padding: 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .top-header h3 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .logout-btn { 
+            background: linear-gradient(to right, #eb3349, #f45c43); 
+            color: white; border: none; padding: 8px 18px; border-radius: 20px; 
+            font-size: 12px; cursor: pointer; font-weight: 700; 
+            box-shadow: 0 4px 10px rgba(235, 51, 73, 0.4);
+        }
+        
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Dashboard & Stats */
+        .search-box { 
+            background: white; padding: 8px; border-radius: 50px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; 
+            display: flex; align-items: center;
+        }
+        .search-box input { 
+            width: 100%; border: none; padding: 12px 20px; border-radius: 50px; 
+            outline: none; font-size: 14px; font-weight: 500;
+        }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .stats-full { margin-bottom: 25px; }
+        
+        .stat-card { 
+            background: rgba(255, 255, 255, 0.9); padding: 15px 10px; border-radius: 15px; 
+            text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15); transition: 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-3px); background: #fff; }
+
+        .stat-card h3 { font-size: 22px; color: #2c3e50; margin: 0; font-weight: 800; }
+        .stat-card p { font-size: 10px; color: #7f8c8d; margin-top: 5px; font-weight: 700; text-transform: uppercase; }
+        
+        .stat-card:nth-child(1) h3 { color: #3498db; }
+        .stat-card:nth-child(2) h3 { color: #27ae60; }
+        .stat-card:nth-child(3) h3 { color: #9b59b6; }
+
+        .highlight-card { 
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); 
+            color: white; 
+        }
+        .highlight-card h3 { color: white !important; font-size: 28px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .highlight-card p { color: rgba(255,255,255,0.9); font-size: 13px; }
+
+        /* Table */
+        .table-wrapper { 
+            background: white; border-radius: 15px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-top: 15px; 
+        }
+        .table-header-text { 
+            padding: 15px 20px; font-weight: 700; color: #2c3e50; 
+            border-bottom: 2px solid #f0f2f5; background: #fff; 
+            font-size: 15px; display: flex; align-items: center; gap: 8px;
+        }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; }
+        th { background: #f8f9fa; color: #7f8c8d; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+        tr:last-child td { border-bottom: none; }
+        
+        .user-avatar { 
+            width: 45px; height: 45px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        
+        /* Badges */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; }
+        .bg-approved { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
+        .bg-guest { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; margin-top: 4px; }
+        .bg-pending { background: #fff3e0; color: #e67e22; border: 1px solid #ffe0b2; }
+        .bg-new { background: #e8eaf6; color: #3f51b5; border: 1px solid #c5cae9; }
+        
+        /* View Button */
+        .view-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; border: none;
+            width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3); transition: 0.2s;
+        }
+
+        /* Batches */
+        .batch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
+        .batch-card { 
+            background: white; padding: 20px; border-radius: 15px; text-align: center; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; 
+            border: 1px solid transparent;
+        }
+        .batch-card:hover { transform: translateY(-5px); border-color: #3498db; }
+        .batch-card h2 { font-size: 20px; color: #34495e; margin-bottom: 5px; font-weight: 800; }
+        .batch-card p { font-size: 11px; color: #95a5a6; font-weight: 600; }
+
+        .approved-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .approved-header h3 { color: #fff; font-size: 18px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        .search-approved { 
+            padding: 10px 15px; border: none; border-radius: 30px; 
+            outline: none; font-size: 13px; width: 100%; max-width: 150px; 
+            transition: 0.3s; background: rgba(255,255,255,0.9); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .search-approved:focus { background: white; width: 180px; }
+        
+        /* EXCEL BUTTON STYLE */
+        .excel-btn {
+            background: linear-gradient(135deg, #1d976c 0%, #93f9b9 100%);
+            color: white; border: none; padding: 8px 15px; border-radius: 30px;
+            font-size: 12px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-transform: uppercase;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .excel-btn:hover { transform: translateY(-2px); }
+        .excel-btn i { font-size: 14px; }
+
+        .batch-stats-box {
+            display: flex; align-items: center; background: white;
+            padding: 8px 15px; border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #eee;
+        }
+        .stat-item-member, .stat-item-guest {
+            font-size: 12px; font-weight: 700; color: #555;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .stat-item-guest { margin-left: 12px; padding-left: 12px; border-left: 2px solid #ddd; }
+        #bTotalMember { color: #2980b9; font-size: 16px; font-weight: 800; }
+        #bTotalGuest { color: #d35400; font-size: 16px; font-weight: 800; }
+
+        /* Settings */
+        .settings-box { 
+            background: white; padding: 20px; border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; 
+        }
+        .settings-box h4 { margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        
+        .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #555; text-transform: uppercase; }
+        
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider:before { transform: translateX(24px); }
+        .control-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+
+        .add-method-group { 
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; 
+            background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px dashed #ccc; 
+        }
+        .add-method-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 13px; background: white; }
+        .add-btn { width: 100%; background: linear-gradient(to right, #11998e, #38ef7d); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; text-transform: uppercase; }
+        
+        .method-list-item { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #eee; padding: 12px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .del-btn { color: #e74c3c; cursor: pointer; font-size: 16px; padding: 8px; background: #fce4ec; border-radius: 50%; transition: 0.2s; }
+
+        .input-group { display: flex; gap: 10px; align-items: center; }
+        .input-group input { width: 100%; flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .mini-save-btn { background: #2c3e50; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 12px; }
+
+        /* Nav */
+        .bottom-nav { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 450px; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; padding: 12px 0; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+            z-index: 1000; border-radius: 30px; 
+        }
+        .nav-item { text-align: center; color: #95a5a6; cursor: pointer; flex: 1; transition: 0.3s; position: relative; }
+        .nav-item i { font-size: 20px; margin-bottom: 2px; display: block; transition: 0.3s; }
+        .nav-item span { font-size: 10px; font-weight: 600; display: block; }
+        .nav-item.active { color: #3498db; }
+        .nav-item.active i { transform: translateY(-2px); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { 
+            background: white; width: 100%; max-width: 360px; border-radius: 25px; 
+            overflow: hidden; position: relative; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4); 
+            animation: zoomUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; max-height: 85vh; 
+        }
+        
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: white; z-index: 10; opacity: 0.8; }
+        .profile-header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            padding: 35px 20px 25px; text-align: center; color: white; flex-shrink: 0; 
+        }
+        .profile-pic { 
+            width: 100px; height: 100px; border-radius: 50%; 
+            border: 4px solid rgba(255,255,255,0.3); object-fit: cover; 
+            margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+        }
+        .profile-name { font-size: 22px; font-weight: 800; margin: 5px 0; }
+        .profile-batch { background: rgba(255,255,255,0.2); padding: 4px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .sl-badge { 
+            position: absolute; top: 20px; left: 20px; 
+            background: white; color: #333; padding: 5px 12px; 
+            border-radius: 15px; font-weight: 800; font-size: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; 
+        }
+        
+        .profile-body { padding: 25px; overflow-y: auto; }
+        .info-line { 
+            display: flex; justify-content: space-between; margin-bottom: 15px; 
+            border-bottom: 1px dashed #eee; padding-bottom: 10px; font-size: 14px; 
+        }
+        .info-line span { color: #7f8c8d; font-weight: 600; }
+        .info-line strong { color: #2c3e50; font-weight: 700; text-align: right; }
+        
+        .guest-section { 
+            background: #f8f9fa; padding: 15px; border-radius: 12px; 
+            margin-top: 15px; display: none; border: 1px solid #e1e1e1; 
+        }
+        .guest-title { 
+            font-size: 11px; font-weight: 800; color: #95a5a6; 
+            margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; 
+        }
+        
+        .action-buttons { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-yes { 
+            flex: 1; padding: 12px; background: linear-gradient(to right, #11998e, #38ef7d); 
+            color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.3);
+        }
+        .btn-no { 
+            flex: 1; padding: 12px; background: linear-gradient(to right, #cb2d3e, #ef473a); 
+            color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(239, 71, 58, 0.3);
+        }
+        
+        .sender-highlight {
+            font-size: 16px; color: #d35400; font-weight: 800; 
+            background: #fdebd0; padding: 3px 10px; border-radius: 6px; display: inline-block;
+        }
+
+        .pdf-btn {
+            background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 8px; 
+            cursor: pointer; font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 5px;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        /* --- DEVELOPER FOOTER --- */
+        .dev-footer { text-align: center; margin-top: 40px; padding-bottom: 20px; color: rgba(255,255,255,0.8); }
+        .dev-logo { 
+            width: 80px; height: 80px; border-radius: 50%; border: 3px solid #fff; 
+            object-fit: cover; margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+            animation: pulseLogo 2s infinite;
+        }
+        @keyframes pulseLogo { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+        
+        .dev-name { font-size: 14px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; }
+        .social-btn { 
+            width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; 
+            color: white; font-size: 20px; text-decoration: none; transition: 0.3s; 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .social-btn:hover { background: white; color: #333; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN SECTION -->
+    <div id="loginSection">
+        <div class="login-card">
+            <h2>Admin Login</h2>
+            <input type="email" id="adminEmail" placeholder="Admin Email">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button class="login-btn" onclick="adminLogin()">Login</button>
+            <p id="loginError" class="login-error">Invalid Email or Password</p>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN CONTENT -->
+    <div id="adminPanelContent">
+        <div class="top-header">
+            <h3>Admin Panel</h3>
+            <button class="logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <!-- 1. DASHBOARD (PENDING) -->
+        <div id="dashboard" class="section active">
+            <div class="search-box">
+                <i class="fas fa-search" style="color: #999; margin-left: 10px;"></i>
+                <input type="text" id="searchAll" placeholder="Search by Name, Batch or Phone..." onkeyup="renderDashboard()">
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="dTotal">0</h3>
+                    <p>Registered</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="dPaidCount">0</h3>
+                    <p>Paid Users</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="dGuestCount">0</h3>
+                    <p>Total Guest</p>
+                </div>
+            </div>
+
+            <div class="stats-full">
+                <div class="stat-card highlight-card" style="box-shadow: 0 10px 30px rgba(17, 153, 142, 0.4);">
+                    <h3 id="dAmount">0 ৳</h3>
+                    <p>Collected Amount</p>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-header-text"><i class="fas fa-clock"></i> Pending Requests (New)</div>
+                <table id="pendingTable"></table>
+            </div>
+        </div>
+        
+        <!-- 4. REVIEW (INTERMEDIATE STEP) -->
+        <div id="reviewSection" class="section">
+             <div class="table-wrapper" style="margin-top:0;">
+                <div class="table-header-text" style="background:#fff3e0; color:#d35400;">
+                    <i class="fas fa-clipboard-check"></i> Final Review List
+                </div>
+                <table id="reviewTable"></table>
+            </div>
+            <p style="text-align:center; margin-top:15px; font-size:12px; color:#ddd;">Users here are verified but not yet final approved.</p>
+        </div>
+
+        <!-- NEW REGISTERED SECTION (ALL USERS) -->
+        <div id="registeredSection" class="section">
+            <div class="approved-header">
+                <h3>All Registered</h3>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="downloadRegisteredExcel()" class="excel-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><i class="fas fa-file-excel"></i> Excel</button>
+                    <input type="text" id="searchRegistered" class="search-approved" placeholder="Search Registered..." onkeyup="searchRegisteredUsers()">
+                </div>
+            </div>
+            
+            <div id="regBatchGrid" class="batch-grid"></div>
+
+            <div id="regSearchContainer" style="display:none;">
+                <div class="table-wrapper">
+                    <div class="table-header-text">🔍 Search Results</div>
+                    <table id="regSearchTable"></table>
+                </div>
+            </div>
+            
+            <div id="regBatchDetailView" style="display:none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button onclick="closeRegisteredView()" style="padding:8px 15px; border:none; background:#fff; border-radius:20px; cursor:pointer; font-weight:700; color:#555; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">← Back</button>
+                    </div>
+                    
+                    <button onclick="downloadRegisteredBatchPDF()" class="pdf-btn"><i class="fas fa-file-pdf"></i> PDF</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header-text">👥 Registered List (<span id="regBatchTitleName"></span>)</div>
+                    <table id="regBatchTable"></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BATCHES (APPROVED) -->
+        <div id="batches" class="section">
+            <div class="approved-header">
+                <h3>Approved Batches</h3>
+                <div style="display:flex; gap:10px;">
+                    <!-- GLOBAL EXCEL BUTTON ADDED HERE -->
+                    <button onclick="downloadGlobalExcel()" class="excel-btn"><i class="fas fa-file-excel"></i> Excel</button>
+                    <input type="text" id="searchApproved" class="search-approved" placeholder="Search Global..." onkeyup="searchApprovedUsers()">
+                </div>
+            </div>
+            
+            <div id="batchGrid" class="batch-grid"></div>
+
+            <div id="approvedSearchContainer" style="display:none;">
+                <div class="table-wrapper">
+                    <div class="table-header-text">🔍 Search Results</div>
+                    <table id="approvedSearchTable"></table>
+                </div>
+            </div>
+            
+            <div id="batchDetailView" style="display:none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <button onclick="closeBatchView()" style="padding:8px 15px; border:none; background:#fff; border-radius:20px; cursor:pointer; font-weight:700; color:#555; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">← Back</button>
+                        
+                        <div class="batch-stats-box">
+                            <span class="stat-item-member">User: <span id="bTotalMember">0</span></span>
+                            <span class="stat-item-guest">Guest: <span id="bTotalGuest">0</span></span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="downloadBatchPDF()" class="pdf-btn"><i class="fas fa-file-pdf"></i> PDF</button>
+                </div>
+                <div class="table-wrapper">
+                    <div class="table-header-text">✅ Student List (<span id="batchTitleName"></span>)</div>
+                    <table id="batchTable"></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SETTINGS -->
+        <div id="settings" class="section">
+            
+            <div class="settings-box">
+                <h4 style="color:#e74c3c;">System Control</h4>
+                <div class="control-item">
+                    <span style="font-weight:700; color:#444;">Receive Payment</span>
+                    <label class="switch">
+                        <input type="checkbox" id="paymentToggle" onchange="togglePaymentSystem()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-box">
+                <h4 style="color:#3498db;">Payment Methods</h4>
+                <div class="add-method-group">
+                    <input type="text" id="newMethodName" placeholder="Method Name (e.g. Bkash Personal)">
+                    <button class="add-btn" onclick="addNewMethod()"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div id="methodsListContainer"></div>
+            </div>
+
+            <div class="settings-box">
+                <h4 style="color:#2c3e50;">Fee Structure</h4>
+                <div class="form-group"><label>Registration Fee</label>
+                    <div class="input-group"><input type="number" id="setSelfFee"><button class="mini-save-btn" onclick="saveIndividual('self_fee', 'setSelfFee')">Save</button></div>
+                </div>
+                <div class="form-group"><label>Spouse Fee</label>
+                    <div class="input-group"><input type="number" id="setSpouseFee"><button class="mini-save-btn" onclick="saveIndividual('spouse_fee', 'setSpouseFee')">Save</button></div>
+                </div>
+                <div class="form-group"><label>Above 5 Years Kids Name Fee</label>
+                    <div class="input-group"><input type="number" id="setKidFee"><button class="mini-save-btn" onclick="saveIndividual('kid_fee', 'setKidFee')">Save</button></div>
+                </div>
+            </div>
+
+            <!-- DEVELOPER FOOTER -->
+            <div class="dev-footer">
+                <img src="https://i.ibb.co.com/0y9W4G0B/IMG-20260112-194542.jpg" class="dev-logo">
+                <div class="dev-name">Developed by 🌟 PIYASH 🌟</div>
+                <div class="dev-batch" style="font-size:12px; margin-bottom:5px;">Batch: 2018</div>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/piyashhasan.ph" class="social-btn fb-bg"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://wa.me/+8801325428923" class="social-btn wa-bg"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://t.me/piyashhasan_ph564" class="social-btn tg-bg"><i class="fab fa-telegram-plane"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-home"></i><span>Pending</span></div>
+            <div class="nav-item" onclick="switchTab('reviewSection', this)"><i class="fas fa-clipboard-check"></i><span>Review</span></div>
+            <!-- NEW REGISTERED TAB -->
+            <div class="nav-item" onclick="switchTab('registeredSection', this)"><i class="fas fa-users"></i><span>Registered</span></div>
+            <div class="nav-item" onclick="switchTab('batches', this)"><i class="fas fa-check-circle"></i><span>Approved</span></div>
+            <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i><span>Setting</span></div>
+        </div>
+
+        <!-- PROFILE MODAL -->
+        <div class="modal" id="profileModal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+                <div class="profile-header">
+                    <div class="sl-badge" id="mSlNo">SL: #001</div>
+                    <img id="mPhoto" class="profile-pic" src="">
+                    <h2 class="profile-name" id="mName">User Name</h2>
+                    <span class="profile-batch" id="mBatch">Batch: 2000</span>
+                </div>
+                <div class="profile-body">
+                    <div class="info-line"><span><i class="fas fa-phone"></i> Phone:</span> <strong id="mPhone">--</strong></div>
+                    <div class="info-line" id="rowAltPhone" style="display:none;"><span><i class="fas fa-phone-alt"></i> Alt Phone:</span> <strong id="mAltPhone">--</strong></div>
+                    <div class="info-line"><span><i class="fas fa-map-marker-alt"></i> Address:</span> <strong id="mAddress">--</strong></div>
+                    <div class="info-line"><span><i class="fas fa-tshirt"></i> T-Shirt:</span> <strong id="mTshirt" style="color:#667eea; font-size:15px;">--</strong></div>
+                    <div class="info-line"><span><i class="fas fa-wallet"></i> Method:</span> <strong id="mMethod" style="color:#3498db;">--</strong></div>
+                    
+                    <div class="info-line" style="align-items:center;">
+                        <span><i class="fas fa-paper-plane"></i> Sender No:</span> 
+                        <strong id="mSender" class="sender-highlight">--</strong>
+                    </div>
+
+                    <div class="info-line"><span><i class="fas fa-coins"></i> Total Amount:</span> <strong id="mAmount" style="color:#27ae60; font-size:16px;">--</strong></div>
+                    
+                    <div id="guestSection" class="guest-section">
+                        <span class="guest-title">Guest Details</span>
+                        <div class="info-line" id="rowSpouse" style="display:none;"><span>Spouse:</span> <strong id="mSpouse"></strong></div>
+                        <div class="info-line" id="rowKidAbove" style="display:none;"><span>Above 5 Years Kids Name:</span> <strong id="mKidAbove"></strong></div>
+                        <div class="info-line" id="rowKidBelow" style="display:none;"><span>Below 5 Years Kids Name:</span> <strong id="mKidBelow"></strong></div>
+                    </div>
+
+                    <div class="action-buttons" id="actionBtns">
+                        <button class="btn-yes" id="btnApproveText" onclick="processUser()">Verify <i class="fas fa-check"></i></button>
+                        <button class="btn-no" onclick="rejectUser()">Reject <i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, query, where, getCountFromServer, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB-n-SgnGwn1P9b-1Xkv3S5QM4U1zHa5nQ",
+            authDomain: "bb-high-school-reunion-2026.firebaseapp.com",
+            projectId: "bb-high-school-reunion-2026",
+            storageBucket: "bb-high-school-reunion-2026.firebasestorage.app",
+            messagingSenderId: "54413925090",
+            appId: "1:54413925090:web:b6ac44faf6313dc19b1cbb"
+        }; 
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allData = [];
+        let selectedUserId = null;
+        let selectedUserStatus = null; // Track status for modal logic
+        let paymentMethods = {};
+        let currentViewBatch = null;
+        let currentRegViewBatch = null;
+        let unsubscribeData = null; 
+
+        // --- AUTHENTICATION ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'block';
+                startDataListener(); 
+                loadAdminSettings();
+            } else {
+                document.getElementById('loginSection').style.display = 'flex';
+                document.getElementById('adminPanelContent').style.display = 'none';
+                if(unsubscribeData) unsubscribeData();
+            }
+        });
+
+        window.adminLogin = function() {
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPass').value;
+            const err = document.getElementById('loginError');
+            
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => { err.style.display = 'none'; })
+                .catch((error) => { err.style.display = 'block'; err.innerText = "Error: " + error.message; });
+        }
+
+        window.adminLogout = function() {
+            signOut(auth).then(() => { location.reload(); }).catch((error) => { console.error('Sign Out Error', error); });
+        }
+
+        // --- LOAD SETTINGS ---
+        async function loadAdminSettings() {
+            try {
+                const docRef = doc(db, "config", "fees");
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById('setSelfFee').value = data.self_fee || 1000;
+                        document.getElementById('setSpouseFee').value = data.spouse_fee || 500;
+                        document.getElementById('setKidFee').value = data.kid_fee || 300;
+                        if (data.payment_active !== undefined) {
+                            document.getElementById('paymentToggle').checked = data.payment_active;
+                        } else {
+                            document.getElementById('paymentToggle').checked = true; 
+                        }
+                        paymentMethods = data.accounts || {};
+                        renderMethodsList();
+                    }
+                });
+            } catch(e) { console.log(e); }
+        }
+
+        window.togglePaymentSystem = async function() {
+            const status = document.getElementById('paymentToggle').checked;
+            try {
+                await setDoc(doc(db, "config", "fees"), { payment_active: status }, { merge: true });
+            } catch(e) {
+                alert("Error updating status: " + e.message);
+                document.getElementById('paymentToggle').checked = !status;
+            }
+        }
+
+        function renderMethodsList() {
+            const container = document.getElementById('methodsListContainer');
+            container.innerHTML = "";
+            for (const [name, val] of Object.entries(paymentMethods)) {
+                container.innerHTML += `
+                    <div class="method-list-item">
+                        <div style="font-weight:700; font-size:14px; color:#444;">${name}</div>
+                        <i class="fas fa-trash-alt del-btn" onclick="deleteMethod('${name}')"></i>
+                    </div>
+                `;
+            }
+        }
+
+        window.addNewMethod = async function() {
+            const name = document.getElementById('newMethodName').value.trim();
+            if(!name) { alert("Please enter a method name"); return; }
+            paymentMethods[name] = "Enabled"; 
+            await setDoc(doc(db, "config", "fees"), { accounts: paymentMethods }, { merge: true });
+            document.getElementById('newMethodName').value = "";
+        }
+
+        window.deleteMethod = async function(key) {
+            if(!confirm("Delete this method?")) return;
+            delete paymentMethods[key];
+            await updateDoc(doc(db, "config", "fees"), { accounts: paymentMethods });
+        }
+
+        window.saveIndividual = async function(field, id) {
+            const val = document.getElementById(id).value;
+            let data = {};
+            data[field] = Number(val);
+            await setDoc(doc(db, "config", "fees"), data, { merge: true });
+            alert("Fee Updated!");
+        }
+
+        // --- HELPER ---
+        function getGuestCount(u) {
+            let count = 0;
+            if(!u.guest_info) return 0;
+            if(u.guest_info.spouse && u.guest_info.spouse !== "No") count++;
+            if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") count++;
+            if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
+                let match = u.guest_info.kid_above.match(/\((\d+)\)/);
+                count += match ? parseInt(match[1]) : 1;
+            }
+            return count;
+        }
+
+        function startDataListener() {
+            unsubscribeData = onSnapshot(collection(db, "students"), (snapshot) => {
+                allData = [];
+                let totalMoney = 0;
+                let paidUsers = 0;
+                let totalGuests = 0;
+
+                snapshot.forEach(doc => {
+                    let d = doc.data();
+                    d.id = doc.id;
+                    allData.push(d);
+                    
+                    if(d.payment_status === "Approved") {
+                        totalMoney += (parseInt(d.total_amount) || 0);
+                        paidUsers++;
+                        totalGuests += getGuestCount(d);
+                    }
+                });
+
+                document.getElementById('dTotal').innerText = allData.length;
+                document.getElementById('dPaidCount').innerText = paidUsers; 
+                document.getElementById('dAmount').innerText = totalMoney + " ৳";
+                document.getElementById('dGuestCount').innerText = totalGuests;
+
+                renderDashboard();
+                renderReviewList();
+                renderBatches();
+                renderRegisteredBatches(); // New function for All Registered
+            });
+        }
+
+        // --- DASHBOARD (PENDING: SUBMITTED -> VERIFIED) ---
+        window.renderDashboard = function() {
+            const table = document.getElementById('pendingTable');
+            const term = document.getElementById('searchAll').value.toLowerCase();
+            table.innerHTML = "";
+
+            // Filter for 'Submitted' or 'Pending Approval' (Legacy)
+            const list = allData.filter(u => 
+                (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") &&
+                (
+                    (u.name && u.name.toLowerCase().includes(term)) ||
+                    (u.phone && u.phone.includes(term)) ||
+                    (u.batch && u.batch.toString().includes(term))
+                )
+            );
+
+            if(list.length === 0) { 
+                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No new requests.</td></tr>"; 
+                return; 
+            }
+
+            list.forEach(u => {
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600; color:#333;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
+                        </td>
+                        <td style="font-weight:600; color:#2c3e50;">${u.total_amount || 0}৳</td>
+                        <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #6a11cb, #2575fc); color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);">Check</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- REVIEW LIST (VERIFIED -> APPROVED) ---
+        window.renderReviewList = function() {
+            const table = document.getElementById('reviewTable');
+            table.innerHTML = "";
+
+            const list = allData.filter(u => u.payment_status === "Verified");
+
+            if(list.length === 0) { 
+                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No users for final review.</td></tr>"; 
+                return; 
+            }
+
+            list.forEach(u => {
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600; color:#333;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
+                        </td>
+                        <td style="font-weight:600; color:#d35400;">Verified</td>
+                        <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #f39c12, #d35400); color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);">Finalize</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ---------------------------------------------
+        // --- NEW SECTION: REGISTERED BATCHES (ALL) ---
+        // ---------------------------------------------
+        window.renderRegisteredBatches = function() {
+            const grid = document.getElementById('regBatchGrid');
+            const counts = {};
+            
+            // Count ALL users
+            allData.forEach(u => { 
+                counts[u.batch] = (counts[u.batch] || 0) + 1; 
+            });
+
+            grid.innerHTML = "";
+            if(Object.keys(counts).length === 0) {
+                grid.innerHTML = "<p style='text-align:center; width:100%; color:#fff; grid-column:1/-1; padding:20px;'>No registered members yet.</p>";
+                return;
+            }
+
+            Object.keys(counts).sort().forEach(b => {
+                grid.innerHTML += `
+                    <div class="batch-card" onclick="openRegisteredBatchDetail('${b}')">
+                        <h2>${b}</h2>
+                        <p>${counts[b]} Registered</p>
+                    </div>
+                `;
+            });
+        }
+
+        window.openRegisteredBatchDetail = function(batch) {
+            currentRegViewBatch = batch;
+            document.getElementById('regBatchTitleName').innerText = batch;
+            document.getElementById('regBatchGrid').style.display = 'none';
+            document.getElementById('regSearchContainer').style.display = 'none';
+            document.getElementById('searchRegistered').value = ""; 
+            document.getElementById('regBatchDetailView').style.display = 'block';
+            
+            const table = document.getElementById('regBatchTable');
+            table.innerHTML = "";
+            
+            // Filter ALL users of that batch
+            const users = allData.filter(u => u.batch == batch);
+            users.sort((a, b) => {
+                // Sort by approved first, then name
+                if (a.payment_status === "Approved" && b.payment_status !== "Approved") return -1;
+                if (a.payment_status !== "Approved" && b.payment_status === "Approved") return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            users.forEach(u => {
+                let statusBadge = '';
+                
+                // --- UPDATE HERE ---
+                if(u.payment_status === "Approved") {
+                    statusBadge = '<span class="badge bg-approved">Approved</span>';
+                } else if(u.payment_status === "Verified") {
+                    statusBadge = '<span class="badge bg-pending">Verified</span>';
+                } else if(u.payment_status === "Rejected") {
+                    statusBadge = '<span class="badge" style="background:#ffebee; color:red;">Rejected</span>';
+                } else {
+                    // "New" এর বদলে এখানে "Not Approved" দেওয়া হলো (Grey Color)
+                    statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
+                }
+                // -------------------
+
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">${u.phone}</div>
+                        </td>
+                        <td>
+                            ${statusBadge}
+                        </td>
+                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.closeRegisteredView = function() {
+            document.getElementById('regBatchDetailView').style.display = 'none';
+            document.getElementById('regSearchContainer').style.display = 'none';
+            document.getElementById('regBatchGrid').style.display = 'grid';
+        }
+
+        window.searchRegisteredUsers = function() {
+            const term = document.getElementById('searchRegistered').value.toLowerCase();
+            // ... (বাকি কোড আগের মতোই থাকবে) ...
+
+            // ... (মাঝখানের লুপ অংশ) ...
+            list.forEach(u => {
+                let statusBadge = '';
+
+                // --- UPDATE HERE ---
+                if(u.payment_status === "Approved") {
+                    statusBadge = '<span class="badge bg-approved">Approved</span>';
+                } else if(u.payment_status === "Verified") {
+                    statusBadge = '<span class="badge bg-pending">Verified</span>';
+                } else {
+                    // এখানেও পরিবর্তন করা হলো
+                    statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
+                }
+                // -------------------
+
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
+                        </td>
+                        <td>
+                            ${statusBadge}
+                        </td>
+                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.downloadRegisteredExcel = function() {
+            // Filter ALL users
+            const users = [...allData];
+            
+            // Sort by Batch then Name
+            users.sort((a, b) => a.batch - b.batch || a.name.localeCompare(b.name));
+
+            if(users.length === 0) {
+                alert("No users to download.");
+                return;
+            }
+
+            const excelData = users.map(u => {
+                return {
+                    "Status": u.payment_status,
+                    "Name": u.name,
+                    "Batch": u.batch,
+                    "Phone": u.phone,
+                    "Amount": u.total_amount || 0,
+                    "Address": u.address || ""
+                };
+            });
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "All Registered List");
+            XLSX.writeFile(wb, "All_Registered_Users.xlsx");
+        }
+        
+        window.downloadRegisteredBatchPDF = function() {
+            if (!currentRegViewBatch) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4'); 
+
+            // Get all users of this batch
+            const users = allData.filter(u => u.batch == currentRegViewBatch);
+            
+            // Sort Approved first
+            users.sort((a, b) => {
+                 if (a.payment_status === "Approved" && b.payment_status !== "Approved") return -1;
+                 if (a.payment_status !== "Approved" && b.payment_status === "Approved") return 1;
+                 return 0;
+            });
+
+            doc.setFontSize(18);
+            doc.text(`Batch ${currentRegViewBatch} - All Registered List`, 14, 15);
+            doc.setFontSize(11);
+            doc.text(`Total: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
+
+            const rows = users.map((u, index) => {
+                return [
+                    index + 1,               
+                    u.payment_status,  
+                    u.name,                  
+                    u.phone, 
+                    u.address || "-",        
+                    (u.total_amount || 0) + " Tk"   
+                ];
+            });
+
+            doc.autoTable({
+                head: [['#', 'Status', 'Name', 'Phone', 'Address', 'Amount']],
+                body: rows,
+                startY: 28,
+                theme: 'grid',
+                styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' },
+                headStyles: { fillColor: [102, 126, 234], fontSize: 11, fontStyle: 'bold' }
+            });
+
+            doc.save(`Batch_${currentRegViewBatch}_Registered_List.pdf`);
+        }
+
+        // ---------------------------------------------
+        // --- EXISTING APPROVED BATCHES LOGIC ---
+        // ---------------------------------------------
+        window.renderBatches = function() {
+            const grid = document.getElementById('batchGrid');
+            const counts = {};
+            
+            allData.forEach(u => { 
+                if(u.payment_status === "Approved") {
+                    counts[u.batch] = (counts[u.batch] || 0) + 1; 
+                }
+            });
+
+            grid.innerHTML = "";
+            if(Object.keys(counts).length === 0) {
+                grid.innerHTML = "<p style='text-align:center; width:100%; color:#fff; grid-column:1/-1; padding:20px;'>No approved members yet.</p>";
+                return;
+            }
+
+            Object.keys(counts).sort().forEach(b => {
+                grid.innerHTML += `
+                    <div class="batch-card" onclick="openBatchDetail('${b}')">
+                        <h2>${b}</h2>
+                        <p>${counts[b]} Approved</p>
+                    </div>
+                `;
+            });
+        }
+
+        window.searchApprovedUsers = function() {
+            const term = document.getElementById('searchApproved').value.toLowerCase();
+            const grid = document.getElementById('batchGrid');
+            const searchView = document.getElementById('approvedSearchContainer');
+            const table = document.getElementById('approvedSearchTable');
+            const detailView = document.getElementById('batchDetailView');
+
+            detailView.style.display = 'none';
+
+            if(term.length === 0) {
+                grid.style.display = 'grid';
+                searchView.style.display = 'none';
+                return;
+            }
+
+            grid.style.display = 'none';
+            searchView.style.display = 'block';
+            table.innerHTML = "";
+
+            const list = allData.filter(u => 
+                u.payment_status === "Approved" &&
+                (
+                    (u.name && u.name.toLowerCase().includes(term)) ||
+                    (u.phone && u.phone.includes(term)) ||
+                    (u.batch && u.batch.toString().includes(term))
+                )
+            );
+
+            if(list.length === 0) {
+                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No approved users found.</td></tr>";
+                return;
+            }
+
+            list.forEach(u => {
+                let gCount = getGuestCount(u);
+                let guestBadge = gCount > 0 ? `<div class="badge bg-guest">Guest: +${gCount}</div>` : '';
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>
+                            ${guestBadge}
+                        </td>
+                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.openBatchDetail = function(batch) {
+            currentViewBatch = batch;
+            document.getElementById('batchTitleName').innerText = batch;
+            document.getElementById('batchGrid').style.display = 'none';
+            document.getElementById('approvedSearchContainer').style.display = 'none';
+            document.getElementById('searchApproved').value = ""; 
+            document.getElementById('batchDetailView').style.display = 'block';
+            
+            const table = document.getElementById('batchTable');
+            table.innerHTML = "";
+            
+            const users = allData.filter(u => u.batch == batch && u.payment_status === "Approved");
+            users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
+
+            let batchGuests = 0;
+            users.forEach(u => batchGuests += getGuestCount(u));
+            
+            document.getElementById('bTotalMember').innerText = users.length;
+            document.getElementById('bTotalGuest').innerText = batchGuests;
+
+            users.forEach(u => {
+                let gCount = getGuestCount(u);
+                let guestBadge = gCount > 0 ? `<div class="badge bg-guest">Guest: +${gCount}</div>` : '';
+
+                table.innerHTML += `
+                    <tr>
+                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                        <td>
+                            <div style="font-weight:600;">${u.name}</div>
+                            <div style="font-size:11px; color:#888">${u.phone}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>
+                            ${guestBadge}
+                        </td>
+                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.closeBatchView = function() {
+            document.getElementById('batchDetailView').style.display = 'none';
+            document.getElementById('approvedSearchContainer').style.display = 'none';
+            document.getElementById('batchGrid').style.display = 'grid';
+        }
+
+        // --- EXCEL EXPORT (WITH SIZE BREAKDOWN + TOTAL SUM) ---
+        window.downloadGlobalExcel = function() {
+            const users = allData.filter(u => u.payment_status === "Approved");
+            
+            // Sort by SL
+            users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
+
+            if(users.length === 0) {
+                alert("No approved users to download.");
+                return;
+            }
+
+            // --- 1. যোগফল রাখার জন্য ভেরিয়েবল ---
+            let sumSpouse = 0;
+            let sumKidBelow = 0;
+            let sumKidAbove = 0;
+            let sumTotalParticipants = 0;
+            let sumTotalAmount = 0;
+            
+            // টি-শার্টের হিসাব
+            let tShirtCounts = {}; 
+            let totalTshirts = 0; // মোট কতটি টি-শার্ট, সেটা গোনার জন্য
+
+            // --- 2. Data Mapping & Calculation ---
+            const excelData = users.map(u => {
+                let spouseCount = (u.guest_info && u.guest_info.spouse && u.guest_info.spouse !== "No") ? 1 : 0;
+                
+                let kidBelowCount = 0;
+                if(u.guest_info && u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
+                    let match = u.guest_info.kid_below.match(/\((\d+)\)/);
+                    kidBelowCount = match ? parseInt(match[1]) : 1;
+                }
+
+                let kidAboveCount = 0;
+                if(u.guest_info && u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
+                    let match = u.guest_info.kid_above.match(/\((\d+)\)/);
+                    kidAboveCount = match ? parseInt(match[1]) : 1;
+                }
+
+                let totalParticipants = 1 + spouseCount + kidBelowCount + kidAboveCount;
+                let amount = parseInt(u.total_amount) || 0;
+                let tSize = u.tshirt ? u.tshirt.trim().toUpperCase() : "";
+
+                // মেইন যোগফল
+                sumSpouse += spouseCount;
+                sumKidBelow += kidBelowCount;
+                sumKidAbove += kidAboveCount;
+                sumTotalParticipants += totalParticipants;
+                sumTotalAmount += amount;
+
+                // **টি-শার্ট গোনা এবং মোট সংখ্যা বের করা**
+                if(tSize && tSize !== "N/A" && tSize !== "" && tSize !== "-") {
+                    tShirtCounts[tSize] = (tShirtCounts[tSize] || 0) + 1;
+                    totalTshirts++; // এখানে মোট টি-শার্টের সংখ্যা ১ করে বাড়ছে
+                }
+
+                return {
+                    "SL": u.serial_number || "",
+                    "Name": u.name,
+                    "SSC Batch": u.batch,
+                    "Cell No": u.phone,
+                    "Alternative Cell No": u.alt_phone || "",
+                    "No of Spouse": spouseCount,
+                    "No of Below 5 Years Kid": kidBelowCount,
+                    "No of Above 5 Years Kid": kidAboveCount,
+                    "Total Participants": totalParticipants,
+                    "Total Amount": amount,
+                    "T-Shirt Size": u.tshirt || ""
+                };
+            });
+
+            // --- 3. টি-শার্টের সামারি টেক্সট তৈরি করা ---
+            // আলাদা সাইজের লিস্ট বানানো
+            let tShirtSummaryText = Object.entries(tShirtCounts)
+                .map(([size, count]) => `${size}: ${count}`)
+                .join(", ");
+            
+            // **শেষে মোট যোগফল যুক্ত করা হচ্ছে (যেমন: = 9)**
+            if(totalTshirts > 0) {
+                tShirtSummaryText += ` = ${totalTshirts}`;
+            }
+
+            // --- 4. Total Row ---
+            const totalRow = {
+                "SL": "",
+                "Name": "",
+                "SSC Batch": "",
+                "Cell No": "",
+                "Alternative Cell No": "Total =", 
+                "No of Spouse": sumSpouse,
+                "No of Below 5 Years Kid": sumKidBelow,
+                "No of Above 5 Years Kid": sumKidAbove,
+                "Total Participants": sumTotalParticipants,
+                "Total Amount": sumTotalAmount,
+                "T-Shirt Size": tShirtSummaryText // এখানে আউটপুট হবে: "L: 2, XL: 4... = 9"
+            };
+
+            excelData.push(totalRow);
+
+            // Create Worksheet
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            
+            const wscols = [
+                {wch:5}, {wch:25}, {wch:10}, {wch:15}, {wch:15},
+                {wch:12}, {wch:20}, {wch:20}, {wch:15}, {wch:12}, {wch:30} // কলাম চওড়া করা হলো
+            ];
+            ws['!cols'] = wscols;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Participants List");
+
+            // Binary Download Code
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+            function s2ab(s) {
+                const buf = new ArrayBuffer(s.length);
+                const view = new Uint8Array(buf);
+                for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+
+            const blob = new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = url;
+            a.download = "Get_Together_Participants_List.xlsx";
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // --- PDF ---
+        window.downloadBatchPDF = function() {
+            if (!currentViewBatch) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4'); 
+
+            const users = allData.filter(u => u.batch == currentViewBatch && u.payment_status === "Approved");
+            users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
+
+            doc.setFontSize(18);
+            doc.text(`Batch ${currentViewBatch} - Reunion 2026 Approved List`, 14, 15);
+            doc.setFontSize(11);
+            doc.text(`Total Students: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
+
+            const rows = users.map((u, index) => {
+                let guestStr = "None";
+                if(u.guest_info) {
+                    let parts = [];
+                    if(u.guest_info.spouse !== "No") parts.push(`Spouse: ${u.guest_info.spouse}`);
+                    if(u.guest_info.kid_above !== "No") parts.push(`Above 5 Years: ${u.guest_info.kid_above}`);
+                    if(u.guest_info.kid_below !== "No") parts.push(`Below 5 Years: ${u.guest_info.kid_below}`);
+                    if(parts.length > 0) guestStr = parts.join("\n");
+                }
+                
+                let phoneDisplay = u.phone;
+                if(u.alt_phone) phoneDisplay += "\n(Alt: " + u.alt_phone + ")";
+
+                return [
+                    index + 1,               
+                    u.serial_number || "-",  
+                    u.name,                  
+                    phoneDisplay, 
+                    u.address || "-",        
+                    u.tshirt || "N/A", 
+                    guestStr,                
+                    u.total_amount + " Tk"   
+                ];
+            });
+
+            doc.autoTable({
+                head: [['#', 'Global SL', 'Name', 'Phone', 'Address', 'T-Shirt', 'Guest Info', 'Amount']],
+                body: rows,
+                startY: 28,
+                theme: 'grid',
+                styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' },
+                headStyles: { fillColor: [44, 62, 80], fontSize: 11, fontStyle: 'bold' },
+                columnStyles: {
+                    0: { cellWidth: 10 }, 
+                    1: { cellWidth: 18 }, 
+                    2: { cellWidth: 30 }, 
+                    3: { cellWidth: 30 }, 
+                    4: { cellWidth: 30 }, 
+                    5: { cellWidth: 15 }, 
+                    6: { cellWidth: 40 }, 
+                    7: { cellWidth: 20 }  
+                }
+            });
+
+            doc.save(`Batch_${currentViewBatch}_Full_List.pdf`);
+        }
+
+        // --- PROFILE MODAL & LOGIC ---
+        window.openProfile = function(id) {
+            selectedUserId = id;
+            const u = allData.find(x => x.id === id);
+            selectedUserStatus = u.payment_status;
+
+            document.getElementById('mPhoto').src = u.photo;
+            document.getElementById('mName').innerText = u.name;
+            document.getElementById('mBatch').innerText = "Batch: " + u.batch;
+            document.getElementById('mPhone').innerText = u.phone;
+            
+            if(u.alt_phone) {
+                document.getElementById('rowAltPhone').style.display = 'flex';
+                document.getElementById('mAltPhone').innerText = u.alt_phone;
+            } else {
+                document.getElementById('rowAltPhone').style.display = 'none';
+            }
+
+            document.getElementById('mAddress').innerText = u.address || "N/A";
+            document.getElementById('mTshirt').innerText = u.tshirt || "N/A";
+            document.getElementById('mMethod').innerText = u.payment_method || "N/A";
+            
+            document.getElementById('mSender').innerText = u.sender_number || "N/A";
+            document.getElementById('mAmount').innerText = (u.total_amount || 0) + " ৳";
+
+            const btnDiv = document.getElementById('actionBtns');
+            const slBadge = document.getElementById('mSlNo');
+            const mainBtn = document.getElementById('btnApproveText');
+
+            // --- DYNAMIC BUTTON LOGIC --- 
+            // আগের কোড মুছে এই নতুন কোডটুকু বসিয়ে দিন:
+            
+            if(u.payment_status === "Approved" || u.payment_status === "NEW") {
+                // Approved অথবা New ইউজার হলে বাটন লুকানো থাকবে
+                btnDiv.style.display = 'none';
+                
+                if(u.payment_status === "Approved") {
+                    slBadge.style.display = 'block';
+                    slBadge.innerText = "SL: #" + (u.serial_number || "N/A");
+                } else {
+                    slBadge.style.display = 'none';
+                }
+            } else {
+                // বাকিদের (Submitted, Verified) জন্য বাটন দেখাবে
+                btnDiv.style.display = 'flex';
+                slBadge.style.display = 'none';
+                
+                if (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") {
+                    mainBtn.innerHTML = 'Review <i class="fas fa-check"></i>';
+                } else if (u.payment_status === "Verified") {
+                    mainBtn.innerHTML = 'Final Approve <i class="fas fa-check-double"></i>';
+                } else {
+                    mainBtn.innerHTML = 'Move to Review <i class="fas fa-check"></i>';
+                }
+            }
+
+            const guestSec = document.getElementById('guestSection');
+            let hasGuest = false;
+
+            document.getElementById('rowSpouse').style.display = 'none';
+            document.getElementById('rowKidAbove').style.display = 'none';
+            document.getElementById('rowKidBelow').style.display = 'none';
+
+            if(u.guest_info) {
+                if(u.guest_info.spouse && u.guest_info.spouse !== "No") {
+                    document.getElementById('rowSpouse').style.display = 'flex';
+                    document.getElementById('mSpouse').innerText = u.guest_info.spouse;
+                    hasGuest = true;
+                }
+                if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
+                    document.getElementById('rowKidAbove').style.display = 'flex';
+                    document.getElementById('mKidAbove').innerText = u.guest_info.kid_above;
+                    hasGuest = true;
+                }
+                if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
+                    document.getElementById('rowKidBelow').style.display = 'flex';
+                    document.getElementById('mKidBelow').innerText = u.guest_info.kid_below;
+                    hasGuest = true;
+                }
+            }
+            guestSec.style.display = hasGuest ? 'block' : 'none';
+
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        window.closeModal = function() { document.getElementById('profileModal').style.display = 'none'; }
+
+        // --- UPDATED PROCESS LOGIC ---
+        window.processUser = async function() {
+            // Logic based on current status
+            if (selectedUserStatus === "Submitted" || selectedUserStatus === "Pending Approval" || selectedUserStatus === "New" || selectedUserStatus === "Rejected") {
+                // Step 1: Pending -> Verified (Review List)
+                if(!confirm("Send this user to Final Review List?")) return;
+                try {
+                    await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Verified" });
+                    alert("User sent to Review list!");
+                    closeModal();
+                } catch(e) { alert("Error: " + e.message); }
+
+            } else if (selectedUserStatus === "Verified") {
+                // Step 2: Verified -> Approved (Final)
+                if(!confirm("Final Approve this user? This will generate Serial Number.")) return;
+                try {
+                    const q = query(collection(db, "students"), where("payment_status", "==", "Approved"));
+                    const snapshot = await getCountFromServer(q);
+                    const newSL = snapshot.data().count + 1;
+
+                    await updateDoc(doc(db, "students", selectedUserId), {
+                        payment_status: "Approved",
+                        serial_number: newSL
+                    });
+                    alert("Approved Successfully! SL: " + newSL);
+                    closeModal();
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        }
+
+        window.rejectUser = async function() {
+            if(!confirm("Reject request?")) return;
+            try {
+                await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Rejected" });
+                alert("Rejected!"); closeModal();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.switchTab = function(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>
