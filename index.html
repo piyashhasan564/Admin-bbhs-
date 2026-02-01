@@ -260,11 +260,48 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             padding: 35px 20px 25px; text-align: center; color: white; flex-shrink: 0; 
         }
-        .profile-pic { 
-            width: 100px; height: 100px; border-radius: 50%; 
-            border: 4px solid rgba(255,255,255,0.3); object-fit: cover; 
-            margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-        }
+        /* --- PROFILE IMAGE & BUTTON CONTAINER --- */
+.profile-img-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.profile-pic { 
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50%; 
+    border: 4px solid rgba(255,255,255,0.3); 
+    object-fit: cover; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+    margin-bottom: 8px; /* ছবির নিচে একটু ফাঁকা */
+}
+
+.save-img-btn {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; /* শুরুতে hidden থাকবে, JS দিয়ে দেখাবো */
+    align-items: center;
+    gap: 5px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.save-img-btn:active {
+    background: white;
+    color: #333;
+    transform: scale(0.95);
+}
         .profile-name { font-size: 22px; font-weight: 800; margin: 5px 0; }
         .profile-batch { background: rgba(255,255,255,0.2); padding: 4px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; }
         .sl-badge { 
@@ -536,11 +573,21 @@
             <div class="modal-content">
                 <span class="close-modal" onclick="closeModal()">&times;</span>
                 <div class="profile-header">
-                    <div class="sl-badge" id="mSlNo">SL: #001</div>
-                    <img id="mPhoto" class="profile-pic" src="">
-                    <h2 class="profile-name" id="mName">User Name</h2>
-                    <span class="profile-batch" id="mBatch">Batch: 2000</span>
-                </div>
+    <div class="sl-badge" id="mSlNo">SL: #001</div>
+    
+    <!-- ইমেজ এবং বাটন কন্টেইনার -->
+    <div class="profile-img-container">
+        <img id="mPhoto" class="profile-pic" src="" alt="User Photo">
+        
+        <!-- আইডি "btnSaveImg" এবং স্টাইল "display:none" দিয়ে রাখা হলো -->
+        <button id="btnSaveImg" class="save-img-btn" onclick="downloadProfileImage()" style="display:none;">
+            <i class="fas fa-download"></i> Save Image
+        </button>
+    </div>
+
+    <h2 class="profile-name" id="mName">User Name</h2>
+    <span class="profile-batch" id="mBatch">Batch: 2000</span>
+</div>
                 <div class="profile-body">
                     <div class="info-line"><span><i class="fas fa-phone"></i> Phone:</span> <strong id="mPhone">--</strong></div>
                     <div class="info-line" id="rowAltPhone" style="display:none;"><span><i class="fas fa-phone-alt"></i> Alt Phone:</span> <strong id="mAltPhone">--</strong></div>
@@ -1316,89 +1363,99 @@
 
         // --- PROFILE MODAL & LOGIC ---
         window.openProfile = function(id) {
-            selectedUserId = id;
-            const u = allData.find(x => x.id === id);
-            selectedUserStatus = u.payment_status;
+    selectedUserId = id;
+    const u = allData.find(x => x.id === id);
+    selectedUserStatus = u.payment_status;
 
-            document.getElementById('mPhoto').src = u.photo;
-            document.getElementById('mName').innerText = u.name;
-            document.getElementById('mBatch').innerText = "Batch: " + u.batch;
-            document.getElementById('mPhone').innerText = u.phone;
-            
-            if(u.alt_phone) {
-                document.getElementById('rowAltPhone').style.display = 'flex';
-                document.getElementById('mAltPhone').innerText = u.alt_phone;
-            } else {
-                document.getElementById('rowAltPhone').style.display = 'none';
-            }
-
-            document.getElementById('mAddress').innerText = u.address || "N/A";
-            document.getElementById('mTshirt').innerText = u.tshirt || "N/A";
-            document.getElementById('mMethod').innerText = u.payment_method || "N/A";
-            
-            document.getElementById('mSender').innerText = u.sender_number || "N/A";
-            document.getElementById('mAmount').innerText = (u.total_amount || 0) + " ৳";
-
-            const btnDiv = document.getElementById('actionBtns');
-            const slBadge = document.getElementById('mSlNo');
-            const mainBtn = document.getElementById('btnApproveText');
-
-            // --- DYNAMIC BUTTON LOGIC --- 
-            // আগের কোড মুছে এই নতুন কোডটুকু বসিয়ে দিন:
-            
-            if(u.payment_status === "Approved" || u.payment_status === "NEW") {
-                // Approved অথবা New ইউজার হলে বাটন লুকানো থাকবে
-                btnDiv.style.display = 'none';
-                
-                if(u.payment_status === "Approved") {
-                    slBadge.style.display = 'block';
-                    slBadge.innerText = "SL: #" + (u.serial_number || "N/A");
-                } else {
-                    slBadge.style.display = 'none';
-                }
-            } else {
-                // বাকিদের (Submitted, Verified) জন্য বাটন দেখাবে
-                btnDiv.style.display = 'flex';
-                slBadge.style.display = 'none';
-                
-                if (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") {
-                    mainBtn.innerHTML = 'Review <i class="fas fa-check"></i>';
-                } else if (u.payment_status === "Verified") {
-                    mainBtn.innerHTML = 'Final Approve <i class="fas fa-check-double"></i>';
-                } else {
-                    mainBtn.innerHTML = 'Move to Review <i class="fas fa-check"></i>';
-                }
-            }
-
-            const guestSec = document.getElementById('guestSection');
-            let hasGuest = false;
-
-            document.getElementById('rowSpouse').style.display = 'none';
-            document.getElementById('rowKidAbove').style.display = 'none';
-            document.getElementById('rowKidBelow').style.display = 'none';
-
-            if(u.guest_info) {
-                if(u.guest_info.spouse && u.guest_info.spouse !== "No") {
-                    document.getElementById('rowSpouse').style.display = 'flex';
-                    document.getElementById('mSpouse').innerText = u.guest_info.spouse;
-                    hasGuest = true;
-                }
-                if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
-                    document.getElementById('rowKidAbove').style.display = 'flex';
-                    document.getElementById('mKidAbove').innerText = u.guest_info.kid_above;
-                    hasGuest = true;
-                }
-                if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
-                    document.getElementById('rowKidBelow').style.display = 'flex';
-                    document.getElementById('mKidBelow').innerText = u.guest_info.kid_below;
-                    hasGuest = true;
-                }
-            }
-            guestSec.style.display = hasGuest ? 'block' : 'none';
-
-            document.getElementById('profileModal').style.display = 'flex';
+    document.getElementById('mPhoto').src = u.photo;
+    document.getElementById('mName').innerText = u.name;
+    document.getElementById('mBatch').innerText = "Batch: " + u.batch;
+    document.getElementById('mPhone').innerText = u.phone;
+    
+    // --- 1. SAVE IMAGE BUTTON LOGIC (NEW UPDATE) ---
+    const saveBtn = document.getElementById('btnSaveImg');
+    if (saveBtn) {
+        if (u.payment_status === "Approved") {
+            // শুধুমাত্র Approved হলে বাটন দেখাবে
+            saveBtn.style.display = 'flex'; 
+        } else {
+            // বাকি সব ক্ষেত্রে (Registered, Pending, Verified) বাটন লুকানো থাকবে
+            saveBtn.style.display = 'none';
         }
+    }
+    // ------------------------------------------------
 
+    if(u.alt_phone) {
+        document.getElementById('rowAltPhone').style.display = 'flex';
+        document.getElementById('mAltPhone').innerText = u.alt_phone;
+    } else {
+        document.getElementById('rowAltPhone').style.display = 'none';
+    }
+
+    document.getElementById('mAddress').innerText = u.address || "N/A";
+    document.getElementById('mTshirt').innerText = u.tshirt || "N/A";
+    document.getElementById('mMethod').innerText = u.payment_method || "N/A";
+    
+    document.getElementById('mSender').innerText = u.sender_number || "N/A";
+    document.getElementById('mAmount').innerText = (u.total_amount || 0) + " ৳";
+
+    const btnDiv = document.getElementById('actionBtns');
+    const slBadge = document.getElementById('mSlNo');
+    const mainBtn = document.getElementById('btnApproveText');
+
+    // --- DYNAMIC BUTTON LOGIC --- 
+    if(u.payment_status === "Approved" || u.payment_status === "NEW") {
+        // Approved অথবা New ইউজার হলে বাটন লুকানো থাকবে
+        btnDiv.style.display = 'none';
+        
+        if(u.payment_status === "Approved") {
+            slBadge.style.display = 'block';
+            slBadge.innerText = "SL: #" + (u.serial_number || "N/A");
+        } else {
+            slBadge.style.display = 'none';
+        }
+    } else {
+        // বাকিদের (Submitted, Verified) জন্য বাটন দেখাবে
+        btnDiv.style.display = 'flex';
+        slBadge.style.display = 'none';
+        
+        if (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") {
+            mainBtn.innerHTML = 'Review <i class="fas fa-check"></i>';
+        } else if (u.payment_status === "Verified") {
+            mainBtn.innerHTML = 'Final Approve <i class="fas fa-check-double"></i>';
+        } else {
+            mainBtn.innerHTML = 'Move to Review <i class="fas fa-check"></i>';
+        }
+    }
+
+    const guestSec = document.getElementById('guestSection');
+    let hasGuest = false;
+
+    document.getElementById('rowSpouse').style.display = 'none';
+    document.getElementById('rowKidAbove').style.display = 'none';
+    document.getElementById('rowKidBelow').style.display = 'none';
+
+    if(u.guest_info) {
+        if(u.guest_info.spouse && u.guest_info.spouse !== "No") {
+            document.getElementById('rowSpouse').style.display = 'flex';
+            document.getElementById('mSpouse').innerText = u.guest_info.spouse;
+            hasGuest = true;
+        }
+        if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
+            document.getElementById('rowKidAbove').style.display = 'flex';
+            document.getElementById('mKidAbove').innerText = u.guest_info.kid_above;
+            hasGuest = true;
+        }
+        if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
+            document.getElementById('rowKidBelow').style.display = 'flex';
+            document.getElementById('mKidBelow').innerText = u.guest_info.kid_below;
+            hasGuest = true;
+        }
+    }
+    guestSec.style.display = hasGuest ? 'block' : 'none';
+
+    document.getElementById('profileModal').style.display = 'flex';
+}
         window.closeModal = function() { document.getElementById('profileModal').style.display = 'none'; }
 
         // --- UPDATED PROCESS LOGIC ---
@@ -1445,6 +1502,41 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
+        window.downloadProfileImage = async function() {
+    const img = document.getElementById('mPhoto');
+    const imageUrl = img.src;
+    const userName = document.getElementById('mName').innerText || 'User';
+    const btn = document.getElementById('btnSaveImg');
+
+    if (!imageUrl) return;
+
+    // লোডিং ইফেক্ট
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `${userName}_Profile.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        
+        // সাকসেস মেসেজ
+        btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+        setTimeout(() => btn.innerHTML = originalText, 2000);
+
+    } catch (error) {
+        // যদি সরাসরি ডাউনলোড না হয়, নতুন ট্যাবে ওপেন হবে
+        window.open(imageUrl, '_blank');
+        btn.innerHTML = originalText;
+    }
+}
     </script>
 </body>
 </html>
