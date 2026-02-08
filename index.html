@@ -894,10 +894,11 @@
                 return a.name.localeCompare(b.name);
             });
 
+            
+
             users.forEach(u => {
                 let statusBadge = '';
                 
-                // --- UPDATE HERE ---
                 if(u.payment_status === "Approved") {
                     statusBadge = '<span class="badge bg-approved">Approved</span>';
                 } else if(u.payment_status === "Verified") {
@@ -905,10 +906,8 @@
                 } else if(u.payment_status === "Rejected") {
                     statusBadge = '<span class="badge" style="background:#ffebee; color:red;">Rejected</span>';
                 } else {
-                    // "New" এর বদলে এখানে "Not Approved" দেওয়া হলো (Grey Color)
                     statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
                 }
-                // -------------------
 
                 table.innerHTML += `
                     <tr>
@@ -920,7 +919,8 @@
                         <td>
                             ${statusBadge}
                         </td>
-                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                        <!-- লক্ষ্য করুন: এখানে openProfile('${u.id}', true) দেওয়া হয়েছে -->
+                        <td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td>
                     </tr>
                 `;
             });
@@ -934,22 +934,18 @@
 
         window.searchRegisteredUsers = function() {
             const term = document.getElementById('searchRegistered').value.toLowerCase();
-            // ... (বাকি কোড আগের মতোই থাকবে) ...
+      
 
-            // ... (মাঝখানের লুপ অংশ) ...
             list.forEach(u => {
                 let statusBadge = '';
 
-                // --- UPDATE HERE ---
                 if(u.payment_status === "Approved") {
                     statusBadge = '<span class="badge bg-approved">Approved</span>';
                 } else if(u.payment_status === "Verified") {
                     statusBadge = '<span class="badge bg-pending">Verified</span>';
                 } else {
-                    // এখানেও পরিবর্তন করা হলো
                     statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
                 }
-                // -------------------
 
                 table.innerHTML += `
                     <tr>
@@ -961,7 +957,8 @@
                         <td>
                             ${statusBadge}
                         </td>
-                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
+                        <!-- লক্ষ্য করুন: এখানেও openProfile('${u.id}', true) দেওয়া হয়েছে -->
+                        <td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td>
                     </tr>
                 `;
             });
@@ -1361,8 +1358,8 @@
             doc.save(`Batch_${currentViewBatch}_Full_List.pdf`);
         }
 
-        // --- PROFILE MODAL & LOGIC ---
-        window.openProfile = function(id) {
+        // এই ফাংশনটি সম্পূর্ণ রিপ্লেস করুন
+window.openProfile = function(id, fromRegistered = false) {
     selectedUserId = id;
     const u = allData.find(x => x.id === id);
     selectedUserStatus = u.payment_status;
@@ -1372,18 +1369,15 @@
     document.getElementById('mBatch').innerText = "Batch: " + u.batch;
     document.getElementById('mPhone').innerText = u.phone;
     
-    // --- 1. SAVE IMAGE BUTTON LOGIC (NEW UPDATE) ---
+    // SAVE IMAGE BUTTON LOGIC
     const saveBtn = document.getElementById('btnSaveImg');
     if (saveBtn) {
         if (u.payment_status === "Approved") {
-            // শুধুমাত্র Approved হলে বাটন দেখাবে
             saveBtn.style.display = 'flex'; 
         } else {
-            // বাকি সব ক্ষেত্রে (Registered, Pending, Verified) বাটন লুকানো থাকবে
             saveBtn.style.display = 'none';
         }
     }
-    // ------------------------------------------------
 
     if(u.alt_phone) {
         document.getElementById('rowAltPhone').style.display = 'flex';
@@ -1403,10 +1397,12 @@
     const slBadge = document.getElementById('mSlNo');
     const mainBtn = document.getElementById('btnApproveText');
 
-    // --- DYNAMIC BUTTON LOGIC --- 
-    if(u.payment_status === "Approved" || u.payment_status === "NEW") {
-        // Approved অথবা New ইউজার হলে বাটন লুকানো থাকবে
-        btnDiv.style.display = 'none';
+    // --- DYNAMIC BUTTON LOGIC (UPDATED) --- 
+    
+    // যদি Registered ট্যাব থেকে আসা হয় (fromRegistered = true) অথবা ইউজার Approved থাকে
+    // তাহলে বাটনগুলো হাইড করে দিবে।
+    if(fromRegistered === true || u.payment_status === "Approved") {
+        btnDiv.style.display = 'none'; // বাটন হাইড
         
         if(u.payment_status === "Approved") {
             slBadge.style.display = 'block';
@@ -1415,7 +1411,7 @@
             slBadge.style.display = 'none';
         }
     } else {
-        // বাকিদের (Submitted, Verified) জন্য বাটন দেখাবে
+        // Pending বা Review ট্যাব থেকে আসলে বাটন দেখাবে
         btnDiv.style.display = 'flex';
         slBadge.style.display = 'none';
         
