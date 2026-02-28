@@ -1,5 +1,3 @@
-<!-- START OF FILE index.html -->
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -10,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SWEET ALERT 2 (Professional Popups) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- PDF LIBRARIES -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -74,13 +75,15 @@
         }
         .top-header h3 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: 0.5px; }
         
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
         .logout-btn { 
             background: linear-gradient(to right, #eb3349, #f45c43); 
             color: white; border: none; padding: 8px 18px; border-radius: 20px; 
             font-size: 12px; cursor: pointer; font-weight: 700; 
             box-shadow: 0 4px 10px rgba(235, 51, 73, 0.4);
         }
-        
+
         .section { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -260,54 +263,32 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             padding: 35px 20px 25px; text-align: center; color: white; flex-shrink: 0; 
         }
+        
         /* --- PROFILE IMAGE & BUTTON CONTAINER --- */
-.profile-img-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-    position: relative;
-}
+        .profile-img-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-bottom: 10px; position: relative;
+        }
 
-.profile-pic { 
-    width: 100px; 
-    height: 100px; 
-    border-radius: 50%; 
-    border: 4px solid rgba(255,255,255,0.3); 
-    object-fit: cover; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-    margin-bottom: 8px; /* ছবির নিচে একটু ফাঁকা */
-}
+        .profile-pic { 
+            width: 100px; height: 100px; border-radius: 50%; 
+            border: 4px solid rgba(255,255,255,0.3); object-fit: cover; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-bottom: 8px; 
+        }
 
-.save-img-btn {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    display: flex; /* শুরুতে hidden থাকবে, JS দিয়ে দেখাবো */
-    align-items: center;
-    gap: 5px;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.save-img-btn:active {
-    background: white;
-    color: #333;
-    transform: scale(0.95);
-}
+        .save-img-btn {
+            background: rgba(255, 255, 255, 0.25); border: 1px solid rgba(255, 255, 255, 0.6);
+            color: white; padding: 5px 12px; border-radius: 15px; cursor: pointer;
+            font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 5px;
+            transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .save-img-btn:active { background: white; color: #333; transform: scale(0.95); }
+        
         .profile-name { font-size: 22px; font-weight: 800; margin: 5px 0; }
         .profile-batch { background: rgba(255,255,255,0.2); padding: 4px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; }
         .sl-badge { 
-            position: absolute; top: 20px; left: 20px; 
-            background: white; color: #333; padding: 5px 12px; 
-            border-radius: 15px; font-weight: 800; font-size: 12px; 
+            position: absolute; top: 20px; left: 20px; background: white; color: #333; 
+            padding: 5px 12px; border-radius: 15px; font-weight: 800; font-size: 12px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; 
         }
         
@@ -368,6 +349,13 @@
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
         }
         .social-btn:hover { background: white; color: #333; transform: translateY(-3px); }
+        
+        /* --- PROFESSIONAL POPUP STYLING (SweetAlert2) --- */
+        div:where(.swal2-container) { z-index: 99999 !important; }
+        div:where(.swal2-container) div:where(.swal2-popup) { border-radius: 20px !important; background: rgba(255, 255, 255, 0.95) !important; backdrop-filter: blur(10px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif; }
+        div:where(.swal2-icon) { border-color: #3498db !important; color: #3498db !important; }
+        div:where(.swal2-confirm) { background: linear-gradient(135deg, #11998e, #38ef7d) !important; box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4) !important; border-radius: 50px !important; }
+        div:where(.swal2-cancel) { background: #ef473a !important; border-radius: 50px !important; box-shadow: 0 5px 15px rgba(239, 71, 58, 0.3) !important; }
     </style>
 </head>
 <body>
@@ -387,7 +375,13 @@
     <div id="adminPanelContent">
         <div class="top-header">
             <h3>Admin Panel</h3>
-            <button class="logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div class="header-actions">
+                <!-- ADDED REFRESH BUTTON -->
+                <button class="logout-btn" style="background: linear-gradient(to right, #1cb5e0, #000851); margin-right: 5px;" onclick="fetchDataManual()">
+                    <i id="refreshIcon" class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button class="logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
         </div>
 
         <!-- 1. DASHBOARD (PENDING) -->
@@ -573,21 +567,21 @@
             <div class="modal-content">
                 <span class="close-modal" onclick="closeModal()">&times;</span>
                 <div class="profile-header">
-    <div class="sl-badge" id="mSlNo">SL: #001</div>
-    
-    <!-- ইমেজ এবং বাটন কন্টেইনার -->
-    <div class="profile-img-container">
-        <img id="mPhoto" class="profile-pic" src="" alt="User Photo">
-        
-        <!-- আইডি "btnSaveImg" এবং স্টাইল "display:none" দিয়ে রাখা হলো -->
-        <button id="btnSaveImg" class="save-img-btn" onclick="downloadProfileImage()" style="display:none;">
-            <i class="fas fa-download"></i> Save Image
-        </button>
-    </div>
+                    <div class="sl-badge" id="mSlNo">SL: #001</div>
+                    
+                    <!-- ইমেজ এবং বাটন কন্টেইনার -->
+                    <div class="profile-img-container">
+                        <img id="mPhoto" class="profile-pic" src="" alt="User Photo">
+                        
+                        <!-- আইডি "btnSaveImg" এবং স্টাইল "display:none" দিয়ে রাখা হলো -->
+                        <button id="btnSaveImg" class="save-img-btn" onclick="downloadProfileImage()" style="display:none;">
+                            <i class="fas fa-download"></i> Save Image
+                        </button>
+                    </div>
 
-    <h2 class="profile-name" id="mName">User Name</h2>
-    <span class="profile-batch" id="mBatch">Batch: 2000</span>
-</div>
+                    <h2 class="profile-name" id="mName">User Name</h2>
+                    <span class="profile-batch" id="mBatch">Batch: 2000</span>
+                </div>
                 <div class="profile-body">
                     <div class="info-line"><span><i class="fas fa-phone"></i> Phone:</span> <strong id="mPhone">--</strong></div>
                     <div class="info-line" id="rowAltPhone" style="display:none;"><span><i class="fas fa-phone-alt"></i> Alt Phone:</span> <strong id="mAltPhone">--</strong></div>
@@ -621,7 +615,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, query, where, getCountFromServer, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, getDocs, getDoc, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB-n-SgnGwn1P9b-1Xkv3S5QM4U1zHa5nQ",
@@ -638,108 +632,172 @@
 
         let allData = [];
         let selectedUserId = null;
-        let selectedUserStatus = null; // Track status for modal logic
+        let selectedUserStatus = null;
         let paymentMethods = {};
         let currentViewBatch = null;
         let currentRegViewBatch = null;
-        let unsubscribeData = null; 
+        
+        // --- SMART CACHE VARIABLES (QUOTA SAVER) ---
+        let lastFetchTime = 0;
+        const CACHE_DURATION = 120000; // 2 Minutes in milliseconds
+
+        // --- GLOBAL ERROR HANDLER ---
+        window.handleFirebaseError = function(error) {
+            console.error("Error detected:", error);
+            if (error.code === 'resource-exhausted' || error.message.toLowerCase().includes('quota')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '⚠️ আজকের কোটা শেষ!',
+                    html: `অ্যাকশনটি সম্পন্ন করা যাচ্ছে না কারণ ডাটাবেজের কোটা শেষ। আগামীকাল দুপুর ১:০০ টার পর চেষ্টা করুন।`,
+                    confirmButtonColor: '#d33',
+                    backdrop: `rgba(0,0,0,0.8)`
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Action Failed', text: error.message });
+            }
+        }
 
         // --- AUTHENTICATION ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('adminPanelContent').style.display = 'block';
-                startDataListener(); 
+                fetchDataManual(true); 
                 loadAdminSettings();
             } else {
                 document.getElementById('loginSection').style.display = 'flex';
                 document.getElementById('adminPanelContent').style.display = 'none';
-                if(unsubscribeData) unsubscribeData();
             }
         });
 
         window.adminLogin = function() {
             const email = document.getElementById('adminEmail').value;
             const pass = document.getElementById('adminPass').value;
-            const err = document.getElementById('loginError');
-            
             signInWithEmailAndPassword(auth, email, pass)
-                .then(() => { err.style.display = 'none'; })
-                .catch((error) => { err.style.display = 'block'; err.innerText = "Error: " + error.message; });
+                .catch((error) => { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginError').innerText = "Error: " + error.message; });
         }
 
         window.adminLogout = function() {
-            signOut(auth).then(() => { location.reload(); }).catch((error) => { console.error('Sign Out Error', error); });
+            signOut(auth).then(() => { location.reload(); });
         }
 
         // --- LOAD SETTINGS ---
         async function loadAdminSettings() {
             try {
                 const docRef = doc(db, "config", "fees");
-                onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        document.getElementById('setSelfFee').value = data.self_fee || 1000;
-                        document.getElementById('setSpouseFee').value = data.spouse_fee || 500;
-                        document.getElementById('setKidFee').value = data.kid_fee || 300;
-                        if (data.payment_active !== undefined) {
-                            document.getElementById('paymentToggle').checked = data.payment_active;
-                        } else {
-                            document.getElementById('paymentToggle').checked = true; 
-                        }
-                        paymentMethods = data.accounts || {};
-                        renderMethodsList();
-                    }
-                });
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('setSelfFee').value = data.self_fee || 1000;
+                    document.getElementById('setSpouseFee').value = data.spouse_fee || 500;
+                    document.getElementById('setKidFee').value = data.kid_fee || 300;
+                    document.getElementById('paymentToggle').checked = data.payment_active !== undefined ? data.payment_active : true;
+                    paymentMethods = data.accounts || {};
+                    renderMethodsList();
+                }
             } catch(e) { console.log(e); }
         }
 
         window.togglePaymentSystem = async function() {
             const status = document.getElementById('paymentToggle').checked;
-            try {
-                await setDoc(doc(db, "config", "fees"), { payment_active: status }, { merge: true });
-            } catch(e) {
-                alert("Error updating status: " + e.message);
-                document.getElementById('paymentToggle').checked = !status;
-            }
+            try { await setDoc(doc(db, "config", "fees"), { payment_active: status }, { merge: true }); } 
+            catch(e) { handleFirebaseError(e); document.getElementById('paymentToggle').checked = !status; }
         }
 
         function renderMethodsList() {
             const container = document.getElementById('methodsListContainer');
             container.innerHTML = "";
             for (const [name, val] of Object.entries(paymentMethods)) {
-                container.innerHTML += `
-                    <div class="method-list-item">
-                        <div style="font-weight:700; font-size:14px; color:#444;">${name}</div>
-                        <i class="fas fa-trash-alt del-btn" onclick="deleteMethod('${name}')"></i>
-                    </div>
-                `;
+                container.innerHTML += `<div class="method-list-item"><div style="font-weight:700; font-size:14px; color:#444;">${name}</div><i class="fas fa-trash-alt del-btn" onclick="deleteMethod('${name}')"></i></div>`;
             }
         }
-
         window.addNewMethod = async function() {
             const name = document.getElementById('newMethodName').value.trim();
             if(!name) { alert("Please enter a method name"); return; }
             paymentMethods[name] = "Enabled"; 
-            await setDoc(doc(db, "config", "fees"), { accounts: paymentMethods }, { merge: true });
-            document.getElementById('newMethodName').value = "";
+            try { await setDoc(doc(db, "config", "fees"), { accounts: paymentMethods }, { merge: true }); document.getElementById('newMethodName').value = ""; renderMethodsList(); } catch (e) { handleFirebaseError(e); }
         }
-
         window.deleteMethod = async function(key) {
             if(!confirm("Delete this method?")) return;
             delete paymentMethods[key];
-            await updateDoc(doc(db, "config", "fees"), { accounts: paymentMethods });
+            try { await updateDoc(doc(db, "config", "fees"), { accounts: paymentMethods }); renderMethodsList(); } catch (e) { handleFirebaseError(e); }
         }
-
         window.saveIndividual = async function(field, id) {
             const val = document.getElementById(id).value;
-            let data = {};
-            data[field] = Number(val);
-            await setDoc(doc(db, "config", "fees"), data, { merge: true });
-            alert("Fee Updated!");
+            let data = {}; data[field] = Number(val);
+            try { await setDoc(doc(db, "config", "fees"), data, { merge: true }); alert("Fee Updated!"); } catch (e) { handleFirebaseError(e); }
         }
 
-        // --- HELPER ---
+        // --- MANUAL DATA FETCH (QUOTA SAVER EDITION) ---
+        window.fetchDataManual = async function(forceRefresh = true) {
+            const btnIcon = document.getElementById('refreshIcon');
+            const now = Date.now();
+
+            if (!forceRefresh && allData.length > 0 && (now - lastFetchTime < CACHE_DURATION)) {
+                console.log("Using Cached Data (Quota Saved)");
+                reRenderAllTables(); 
+                return;
+            }
+
+            if(btnIcon) btnIcon.className = "fas fa-spinner fa-spin";
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "students"));
+                
+                allData = [];
+                let totalMoney = 0;
+                let paidUsers = 0;
+                let totalGuests = 0;
+
+                querySnapshot.forEach(doc => {
+                    let d = doc.data();
+                    d.id = doc.id;
+                    allData.push(d);
+                    
+                    if(d.payment_status === "Approved") {
+                        totalMoney += (parseInt(d.total_amount) || 0);
+                        paidUsers++;
+                        totalGuests += getGuestCount(d);
+                    }
+                });
+
+                lastFetchTime = Date.now(); 
+
+                updateStats(paidUsers, totalMoney, totalGuests);
+                reRenderAllTables();
+                
+                if(btnIcon) btnIcon.className = "fas fa-sync-alt";
+                
+                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+                Toast.fire({ icon: 'success', title: 'Data Loaded Successfully' });
+
+            } catch (error) {
+                if(btnIcon) btnIcon.className = "fas fa-exclamation-triangle";
+                handleFirebaseError(error);
+            }
+        }
+
+        function reRenderAllTables() {
+            renderDashboard();
+            renderReviewList();
+            renderBatches();
+            renderRegisteredBatches();
+            
+            if(document.getElementById('batchDetailView').style.display === 'block' && currentViewBatch) {
+                openBatchDetail(currentViewBatch);
+            }
+            if(document.getElementById('regBatchDetailView').style.display === 'block' && currentRegViewBatch) {
+                openRegisteredBatchDetail(currentRegViewBatch);
+            }
+        }
+
+        function updateStats(paidUsers, totalMoney, totalGuests) {
+            document.getElementById('dTotal').innerText = allData.length;
+            document.getElementById('dPaidCount').innerText = paidUsers; 
+            document.getElementById('dAmount').innerText = totalMoney + " ৳";
+            document.getElementById('dGuestCount').innerText = totalGuests;
+        }
+
         function getGuestCount(u) {
             let count = 0;
             if(!u.guest_info) return 0;
@@ -752,369 +810,141 @@
             return count;
         }
 
-        function startDataListener() {
-            unsubscribeData = onSnapshot(collection(db, "students"), (snapshot) => {
-                allData = [];
-                let totalMoney = 0;
-                let paidUsers = 0;
-                let totalGuests = 0;
-
-                snapshot.forEach(doc => {
-                    let d = doc.data();
-                    d.id = doc.id;
-                    allData.push(d);
-                    
-                    if(d.payment_status === "Approved") {
-                        totalMoney += (parseInt(d.total_amount) || 0);
-                        paidUsers++;
-                        totalGuests += getGuestCount(d);
-                    }
-                });
-
-                document.getElementById('dTotal').innerText = allData.length;
-                document.getElementById('dPaidCount').innerText = paidUsers; 
-                document.getElementById('dAmount').innerText = totalMoney + " ৳";
-                document.getElementById('dGuestCount').innerText = totalGuests;
-
-                renderDashboard();
-                renderReviewList();
-                renderBatches();
-                renderRegisteredBatches(); // New function for All Registered
-            });
-        }
-
-        // --- DASHBOARD (PENDING: SUBMITTED -> VERIFIED) ---
+        // --- DASHBOARD RENDERING ---
         window.renderDashboard = function() {
             const table = document.getElementById('pendingTable');
             const term = document.getElementById('searchAll').value.toLowerCase();
             table.innerHTML = "";
 
-            // Filter for 'Submitted' or 'Pending Approval' (Legacy)
             const list = allData.filter(u => 
                 (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") &&
-                (
-                    (u.name && u.name.toLowerCase().includes(term)) ||
-                    (u.phone && u.phone.includes(term)) ||
-                    (u.batch && u.batch.toString().includes(term))
-                )
+                ((u.name && u.name.toLowerCase().includes(term)) || (u.phone && u.phone.includes(term)) || (u.batch && u.batch.toString().includes(term)))
             );
 
-            if(list.length === 0) { 
-                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No new requests.</td></tr>"; 
-                return; 
-            }
+            if(list.length === 0) { table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No new requests.</td></tr>"; return; }
 
             list.forEach(u => {
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600; color:#333;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
-                        </td>
-                        <td style="font-weight:600; color:#2c3e50;">${u.total_amount || 0}৳</td>
-                        <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #6a11cb, #2575fc); color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);">Check</button></td>
-                    </tr>
-                `;
+                table.innerHTML += `<tr>
+                    <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                    <td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">Batch: ${u.batch}</div></td>
+                    <td style="font-weight:600; color:#2c3e50;">${u.total_amount || 0}৳</td>
+                    <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #6a11cb, #2575fc); color:white; border:none; border-radius:6px; cursor:pointer;">Check</button></td>
+                </tr>`;
             });
         }
 
-        // --- REVIEW LIST (VERIFIED -> APPROVED) ---
         window.renderReviewList = function() {
             const table = document.getElementById('reviewTable');
             table.innerHTML = "";
-
             const list = allData.filter(u => u.payment_status === "Verified");
-
-            if(list.length === 0) { 
-                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No users for final review.</td></tr>"; 
-                return; 
-            }
-
+            if(list.length === 0) { table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No users for final review.</td></tr>"; return; }
             list.forEach(u => {
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600; color:#333;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
-                        </td>
-                        <td style="font-weight:600; color:#d35400;">Verified</td>
-                        <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #f39c12, #d35400); color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);">Finalize</button></td>
-                    </tr>
-                `;
+                table.innerHTML += `<tr>
+                    <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
+                    <td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">Batch: ${u.batch}</div></td>
+                    <td style="font-weight:600; color:#d35400;">Verified</td>
+                    <td><button onclick="openProfile('${u.id}')" style="padding:6px 12px; background:linear-gradient(to right, #f39c12, #d35400); color:white; border:none; border-radius:6px; cursor:pointer;">Finalize</button></td>
+                </tr>`;
             });
         }
 
-        // ---------------------------------------------
-        // --- NEW SECTION: REGISTERED BATCHES (ALL) ---
-        // ---------------------------------------------
-        window.renderRegisteredBatches = function() {
-            const grid = document.getElementById('regBatchGrid');
-            const counts = {};
-            
-            // Count ALL users
-            allData.forEach(u => { 
-                counts[u.batch] = (counts[u.batch] || 0) + 1; 
-            });
+        // --- UPDATED PROCESS LOGIC (LOCAL UPDATE) ---
+        window.processUser = async function() {
+            if (["Submitted", "Pending Approval", "New", "Rejected"].includes(selectedUserStatus)) {
+                const result = await Swal.fire({ title: 'Verify User?', text: "Send to Final Review?", icon: 'question', showCancelButton: true, confirmButtonText: 'Yes, Verify' });
+                if (result.isConfirmed) {
+                    try {
+                        await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Verified" });
+                        
+                        const idx = allData.findIndex(u => u.id === selectedUserId);
+                        if(idx > -1) { allData[idx].payment_status = "Verified"; }
 
-            grid.innerHTML = "";
-            if(Object.keys(counts).length === 0) {
-                grid.innerHTML = "<p style='text-align:center; width:100%; color:#fff; grid-column:1/-1; padding:20px;'>No registered members yet.</p>";
-                return;
-            }
-
-            Object.keys(counts).sort().forEach(b => {
-                grid.innerHTML += `
-                    <div class="batch-card" onclick="openRegisteredBatchDetail('${b}')">
-                        <h2>${b}</h2>
-                        <p>${counts[b]} Registered</p>
-                    </div>
-                `;
-            });
-        }
-
-        window.openRegisteredBatchDetail = function(batch) {
-            currentRegViewBatch = batch;
-            document.getElementById('regBatchTitleName').innerText = batch;
-            document.getElementById('regBatchGrid').style.display = 'none';
-            document.getElementById('regSearchContainer').style.display = 'none';
-            document.getElementById('searchRegistered').value = ""; 
-            document.getElementById('regBatchDetailView').style.display = 'block';
-            
-            const table = document.getElementById('regBatchTable');
-            table.innerHTML = "";
-            
-            // Filter ALL users of that batch
-            const users = allData.filter(u => u.batch == batch);
-            users.sort((a, b) => {
-                // Sort by approved first, then name
-                if (a.payment_status === "Approved" && b.payment_status !== "Approved") return -1;
-                if (a.payment_status !== "Approved" && b.payment_status === "Approved") return 1;
-                return a.name.localeCompare(b.name);
-            });
-
-            
-
-            users.forEach(u => {
-                let statusBadge = '';
-                
-                if(u.payment_status === "Approved") {
-                    statusBadge = '<span class="badge bg-approved">Approved</span>';
-                } else if(u.payment_status === "Verified") {
-                    statusBadge = '<span class="badge bg-pending">Verified</span>';
-                } else if(u.payment_status === "Rejected") {
-                    statusBadge = '<span class="badge" style="background:#ffebee; color:red;">Rejected</span>';
-                } else {
-                    statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
+                        Swal.fire('Verified!', 'User sent to Review list.', 'success');
+                        closeModal();
+                        reRenderAllTables(); 
+                    } catch(e) { handleFirebaseError(e); }
                 }
 
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">${u.phone}</div>
-                        </td>
-                        <td>
-                            ${statusBadge}
-                        </td>
-                        <!-- লক্ষ্য করুন: এখানে openProfile('${u.id}', true) দেওয়া হয়েছে -->
-                        <td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
+            } else if (selectedUserStatus === "Verified") {
+                const result = await Swal.fire({ title: 'Final Approve?', text: "Generate Serial & Approve?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#11998e', confirmButtonText: 'Approve' });
+                if (result.isConfirmed) {
+                    try {
+                        const currentApprovedCount = allData.filter(u => u.payment_status === "Approved").length;
+                        const newSL = currentApprovedCount + 1;
 
-        window.closeRegisteredView = function() {
-            document.getElementById('regBatchDetailView').style.display = 'none';
-            document.getElementById('regSearchContainer').style.display = 'none';
-            document.getElementById('regBatchGrid').style.display = 'grid';
-        }
+                        await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Approved", serial_number: newSL });
 
-        window.searchRegisteredUsers = function() {
-            const term = document.getElementById('searchRegistered').value.toLowerCase();
-      
+                        const idx = allData.findIndex(u => u.id === selectedUserId);
+                        if(idx > -1) { 
+                            allData[idx].payment_status = "Approved"; 
+                            allData[idx].serial_number = newSL;
+                            
+                            let currentTotal = parseInt(document.getElementById('dAmount').innerText) || 0;
+                            let userAmount = parseInt(allData[idx].total_amount) || 0;
+                            document.getElementById('dAmount').innerText = (currentTotal + userAmount) + " ৳";
+                            
+                            let currentPaid = parseInt(document.getElementById('dPaidCount').innerText) || 0;
+                            document.getElementById('dPaidCount').innerText = currentPaid + 1;
+                        }
 
-            list.forEach(u => {
-                let statusBadge = '';
-
-                if(u.payment_status === "Approved") {
-                    statusBadge = '<span class="badge bg-approved">Approved</span>';
-                } else if(u.payment_status === "Verified") {
-                    statusBadge = '<span class="badge bg-pending">Verified</span>';
-                } else {
-                    statusBadge = '<span class="badge" style="background:#f1f2f6; color:#7f8c8d; border:1px solid #ced6e0;">Not Approved</span>';
+                        Swal.fire('Approved!', `User Approved. SL: ${newSL}`, 'success');
+                        closeModal();
+                        reRenderAllTables(); 
+                    } catch(e) { handleFirebaseError(e); }
                 }
-
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
-                        </td>
-                        <td>
-                            ${statusBadge}
-                        </td>
-                        <!-- লক্ষ্য করুন: এখানেও openProfile('${u.id}', true) দেওয়া হয়েছে -->
-                        <td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        window.downloadRegisteredExcel = function() {
-            // Filter ALL users
-            const users = [...allData];
-            
-            // Sort by Batch then Name
-            users.sort((a, b) => a.batch - b.batch || a.name.localeCompare(b.name));
-
-            if(users.length === 0) {
-                alert("No users to download.");
-                return;
             }
-
-            const excelData = users.map(u => {
-                return {
-                    "Status": u.payment_status,
-                    "Name": u.name,
-                    "Batch": u.batch,
-                    "Phone": u.phone,
-                    "Amount": u.total_amount || 0,
-                    "Address": u.address || ""
-                };
-            });
-
-            const ws = XLSX.utils.json_to_sheet(excelData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "All Registered List");
-            XLSX.writeFile(wb, "All_Registered_Users.xlsx");
-        }
-        
-        window.downloadRegisteredBatchPDF = function() {
-            if (!currentRegViewBatch) return;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4'); 
-
-            // Get all users of this batch
-            const users = allData.filter(u => u.batch == currentRegViewBatch);
-            
-            // Sort Approved first
-            users.sort((a, b) => {
-                 if (a.payment_status === "Approved" && b.payment_status !== "Approved") return -1;
-                 if (a.payment_status !== "Approved" && b.payment_status === "Approved") return 1;
-                 return 0;
-            });
-
-            doc.setFontSize(18);
-            doc.text(`Batch ${currentRegViewBatch} - All Registered List`, 14, 15);
-            doc.setFontSize(11);
-            doc.text(`Total: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
-
-            const rows = users.map((u, index) => {
-                return [
-                    index + 1,               
-                    u.payment_status,  
-                    u.name,                  
-                    u.phone, 
-                    u.address || "-",        
-                    (u.total_amount || 0) + " Tk"   
-                ];
-            });
-
-            doc.autoTable({
-                head: [['#', 'Status', 'Name', 'Phone', 'Address', 'Amount']],
-                body: rows,
-                startY: 28,
-                theme: 'grid',
-                styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' },
-                headStyles: { fillColor: [102, 126, 234], fontSize: 11, fontStyle: 'bold' }
-            });
-
-            doc.save(`Batch_${currentRegViewBatch}_Registered_List.pdf`);
         }
 
-        // ---------------------------------------------
-        // --- EXISTING APPROVED BATCHES LOGIC ---
-        // ---------------------------------------------
+        window.rejectUser = async function() {
+            const result = await Swal.fire({ title: 'Reject User?', text: "Sure to reject?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, Reject' });
+            if (result.isConfirmed) {
+                try {
+                    await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Rejected" });
+                    
+                    const idx = allData.findIndex(u => u.id === selectedUserId);
+                    if(idx > -1) { allData[idx].payment_status = "Rejected"; }
+
+                    Swal.fire('Rejected!', 'User request rejected.', 'info');
+                    closeModal();
+                    reRenderAllTables();
+                } catch(e) { handleFirebaseError(e); }
+            }
+        }
+
+        window.switchTab = function(id, el) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            fetchDataManual(false);
+        }
+
         window.renderBatches = function() {
             const grid = document.getElementById('batchGrid');
             const counts = {};
-            
-            allData.forEach(u => { 
-                if(u.payment_status === "Approved") {
-                    counts[u.batch] = (counts[u.batch] || 0) + 1; 
-                }
-            });
-
+            allData.forEach(u => { if(u.payment_status === "Approved") { counts[u.batch] = (counts[u.batch] || 0) + 1; } });
             grid.innerHTML = "";
-            if(Object.keys(counts).length === 0) {
-                grid.innerHTML = "<p style='text-align:center; width:100%; color:#fff; grid-column:1/-1; padding:20px;'>No approved members yet.</p>";
-                return;
-            }
-
             Object.keys(counts).sort().forEach(b => {
-                grid.innerHTML += `
-                    <div class="batch-card" onclick="openBatchDetail('${b}')">
-                        <h2>${b}</h2>
-                        <p>${counts[b]} Approved</p>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="batch-card" onclick="openBatchDetail('${b}')"><h2>${b}</h2><p>${counts[b]} Approved</p></div>`;
             });
         }
-
+        
         window.searchApprovedUsers = function() {
             const term = document.getElementById('searchApproved').value.toLowerCase();
             const grid = document.getElementById('batchGrid');
             const searchView = document.getElementById('approvedSearchContainer');
             const table = document.getElementById('approvedSearchTable');
-            const detailView = document.getElementById('batchDetailView');
+            document.getElementById('batchDetailView').style.display = 'none';
 
-            detailView.style.display = 'none';
-
-            if(term.length === 0) {
-                grid.style.display = 'grid';
-                searchView.style.display = 'none';
-                return;
-            }
-
-            grid.style.display = 'none';
-            searchView.style.display = 'block';
-            table.innerHTML = "";
-
-            const list = allData.filter(u => 
-                u.payment_status === "Approved" &&
-                (
-                    (u.name && u.name.toLowerCase().includes(term)) ||
-                    (u.phone && u.phone.includes(term)) ||
-                    (u.batch && u.batch.toString().includes(term))
-                )
-            );
-
-            if(list.length === 0) {
-                table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No approved users found.</td></tr>";
-                return;
-            }
-
+            if(term.length === 0) { grid.style.display = 'grid'; searchView.style.display = 'none'; return; }
+            grid.style.display = 'none'; searchView.style.display = 'block'; table.innerHTML = "";
+            
+            const list = allData.filter(u => u.payment_status === "Approved" && ((u.name && u.name.toLowerCase().includes(term)) || (u.phone && u.phone.includes(term)) || (u.batch && u.batch.toString().includes(term))));
+            if(list.length === 0) { table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No approved users found.</td></tr>"; return; }
             list.forEach(u => {
                 let gCount = getGuestCount(u);
                 let guestBadge = gCount > 0 ? `<div class="badge bg-guest">Guest: +${gCount}</div>` : '';
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">Batch: ${u.batch}</div>
-                        </td>
-                        <td>
-                            <span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>
-                            ${guestBadge}
-                        </td>
-                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                `;
+                table.innerHTML += `<tr><td style="width:50px"><img src="${u.photo}" class="user-avatar"></td><td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">Batch: ${u.batch}</div></td><td><span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>${guestBadge}</td><td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td></tr>`;
             });
         }
 
@@ -1123,193 +953,186 @@
             document.getElementById('batchTitleName').innerText = batch;
             document.getElementById('batchGrid').style.display = 'none';
             document.getElementById('approvedSearchContainer').style.display = 'none';
-            document.getElementById('searchApproved').value = ""; 
+            document.getElementById('searchApproved').value = "";
             document.getElementById('batchDetailView').style.display = 'block';
-            
             const table = document.getElementById('batchTable');
             table.innerHTML = "";
-            
             const users = allData.filter(u => u.batch == batch && u.payment_status === "Approved");
             users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
-
-            let batchGuests = 0;
-            users.forEach(u => batchGuests += getGuestCount(u));
-            
             document.getElementById('bTotalMember').innerText = users.length;
+            let batchGuests = 0; users.forEach(u => batchGuests += getGuestCount(u));
             document.getElementById('bTotalGuest').innerText = batchGuests;
-
+            
             users.forEach(u => {
                 let gCount = getGuestCount(u);
                 let guestBadge = gCount > 0 ? `<div class="badge bg-guest">Guest: +${gCount}</div>` : '';
+                table.innerHTML += `<tr><td style="width:50px"><img src="${u.photo}" class="user-avatar"></td><td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">${u.phone}</div></td><td><span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>${guestBadge}</td><td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td></tr>`;
+            });
+        }
+        window.closeBatchView = function() { document.getElementById('batchDetailView').style.display = 'none'; document.getElementById('approvedSearchContainer').style.display = 'none'; document.getElementById('batchGrid').style.display = 'grid'; }
 
-                table.innerHTML += `
-                    <tr>
-                        <td style="width:50px"><img src="${u.photo}" class="user-avatar"></td>
-                        <td>
-                            <div style="font-weight:600;">${u.name}</div>
-                            <div style="font-size:11px; color:#888">${u.phone}</div>
-                        </td>
-                        <td>
-                            <span class="badge bg-approved">SL: #${u.serial_number || 'N/A'}</span>
-                            ${guestBadge}
-                        </td>
-                        <td><button onclick="openProfile('${u.id}')" class="view-btn"><i class="fas fa-eye"></i></button></td>
-                    </tr>
-                `;
+        // Registered Logic
+        window.renderRegisteredBatches = function() {
+            const grid = document.getElementById('regBatchGrid');
+            const counts = {};
+            allData.forEach(u => { counts[u.batch] = (counts[u.batch] || 0) + 1; });
+            grid.innerHTML = "";
+            Object.keys(counts).sort().forEach(b => {
+                grid.innerHTML += `<div class="batch-card" onclick="openRegisteredBatchDetail('${b}')"><h2>${b}</h2><p>${counts[b]} Registered</p></div>`;
+            });
+        }
+        
+        window.openRegisteredBatchDetail = function(batch) {
+            currentRegViewBatch = batch;
+            document.getElementById('regBatchTitleName').innerText = batch;
+            document.getElementById('regBatchGrid').style.display = 'none';
+            document.getElementById('regSearchContainer').style.display = 'none';
+            document.getElementById('searchRegistered').value = "";
+            document.getElementById('regBatchDetailView').style.display = 'block';
+            const table = document.getElementById('regBatchTable');
+            table.innerHTML = "";
+            const users = allData.filter(u => u.batch == batch);
+            users.forEach(u => {
+                let statusBadge = u.payment_status === "Approved" ? '<span class="badge bg-approved">Approved</span>' : '<span class="badge bg-pending">'+u.payment_status+'</span>';
+                table.innerHTML += `<tr><td style="width:50px"><img src="${u.photo}" class="user-avatar"></td><td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">${u.phone}</div></td><td>${statusBadge}</td><td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td></tr>`;
             });
         }
 
-        window.closeBatchView = function() {
-            document.getElementById('batchDetailView').style.display = 'none';
-            document.getElementById('approvedSearchContainer').style.display = 'none';
-            document.getElementById('batchGrid').style.display = 'grid';
+        window.closeRegisteredView = function() { document.getElementById('regBatchDetailView').style.display = 'none'; document.getElementById('regSearchContainer').style.display = 'none'; document.getElementById('regBatchGrid').style.display = 'grid'; }
+
+        window.searchRegisteredUsers = function() {
+            const term = document.getElementById('searchRegistered').value.toLowerCase();
+            const grid = document.getElementById('regBatchGrid');
+            const searchView = document.getElementById('regSearchContainer');
+            const table = document.getElementById('regSearchTable');
+            document.getElementById('regBatchDetailView').style.display = 'none';
+
+            if(term.length === 0) { grid.style.display = 'grid'; searchView.style.display = 'none'; return; }
+            grid.style.display = 'none'; searchView.style.display = 'block'; table.innerHTML = "";
+
+            const list = allData.filter(u => (u.name && u.name.toLowerCase().includes(term)) || (u.phone && u.phone.includes(term)) || (u.batch && u.batch.toString().includes(term)));
+            if(list.length === 0) { table.innerHTML = "<tr><td colspan='4' style='padding:20px; text-align:center; color:#888;'>No users found.</td></tr>"; return; }
+
+            list.forEach(u => {
+                let statusBadge = u.payment_status === "Approved" ? '<span class="badge bg-approved">Approved</span>' : '<span class="badge bg-pending">'+u.payment_status+'</span>';
+                table.innerHTML += `<tr><td style="width:50px"><img src="${u.photo}" class="user-avatar"></td><td><div style="font-weight:600;">${u.name}</div><div style="font-size:11px; color:#888">Batch: ${u.batch}</div></td><td>${statusBadge}</td><td><button onclick="openProfile('${u.id}', true)" class="view-btn"><i class="fas fa-eye"></i></button></td></tr>`;
+            });
         }
 
-        // --- EXCEL EXPORT (WITH SIZE BREAKDOWN + TOTAL SUM) ---
+        // Profile Logic
+        window.openProfile = function(id, fromRegistered = false) {
+            selectedUserId = id;
+            const u = allData.find(x => x.id === id);
+            selectedUserStatus = u.payment_status;
+
+            document.getElementById('mPhoto').src = u.photo;
+            document.getElementById('mName').innerText = u.name;
+            document.getElementById('mBatch').innerText = "Batch: " + u.batch;
+            document.getElementById('mPhone').innerText = u.phone;
+            document.getElementById('mAmount').innerText = (u.total_amount || 0) + " ৳";
+            document.getElementById('mSender').innerText = u.sender_number || "N/A";
+            document.getElementById('mTshirt').innerText = u.tshirt || "N/A";
+            document.getElementById('mMethod').innerText = u.payment_method || "N/A";
+            document.getElementById('mAddress').innerText = u.address || "N/A";
+            
+            if(u.alt_phone) {
+                document.getElementById('rowAltPhone').style.display = 'flex';
+                document.getElementById('mAltPhone').innerText = u.alt_phone;
+            } else { document.getElementById('rowAltPhone').style.display = 'none'; }
+            
+            const saveBtn = document.getElementById('btnSaveImg');
+            if(saveBtn) saveBtn.style.display = u.payment_status === "Approved" ? 'flex' : 'none';
+
+            const btnDiv = document.getElementById('actionBtns');
+            const slBadge = document.getElementById('mSlNo');
+            const mainBtn = document.getElementById('btnApproveText');
+
+            if(fromRegistered || u.payment_status === "Approved") {
+                btnDiv.style.display = 'none';
+                if(u.payment_status === "Approved") { slBadge.style.display = 'block'; slBadge.innerText = "SL: #" + u.serial_number; }
+                else { slBadge.style.display = 'none'; }
+            } else {
+                btnDiv.style.display = 'flex'; slBadge.style.display = 'none';
+                if (u.payment_status === "Verified") mainBtn.innerHTML = 'Final Approve <i class="fas fa-check-double"></i>';
+                else mainBtn.innerHTML = 'Review <i class="fas fa-check"></i>';
+            }
+            
+            const guestSec = document.getElementById('guestSection');
+            document.getElementById('rowSpouse').style.display = 'none';
+            document.getElementById('rowKidAbove').style.display = 'none';
+            document.getElementById('rowKidBelow').style.display = 'none';
+
+            let hasGuest = false;
+            if(u.guest_info) {
+                if(u.guest_info.spouse && u.guest_info.spouse !== "No") { document.getElementById('rowSpouse').style.display = 'flex'; document.getElementById('mSpouse').innerText = u.guest_info.spouse; hasGuest = true; }
+                if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") { document.getElementById('rowKidAbove').style.display = 'flex'; document.getElementById('mKidAbove').innerText = u.guest_info.kid_above; hasGuest = true; }
+                if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") { document.getElementById('rowKidBelow').style.display = 'flex'; document.getElementById('mKidBelow').innerText = u.guest_info.kid_below; hasGuest = true; }
+            }
+            guestSec.style.display = hasGuest ? 'block' : 'none';
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+        window.closeModal = function() { document.getElementById('profileModal').style.display = 'none'; }
+
+        // --- EXCEL & PDF FUNCTIONS (RESTORED FULLY) ---
         window.downloadGlobalExcel = function() {
             const users = allData.filter(u => u.payment_status === "Approved");
-            
-            // Sort by SL
             users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
+            if(users.length === 0) { alert("No approved users to download."); return; }
 
-            if(users.length === 0) {
-                alert("No approved users to download.");
-                return;
-            }
+            let sumSpouse = 0; let sumKidBelow = 0; let sumKidAbove = 0; let sumTotalParticipants = 0; let sumTotalAmount = 0;
+            let tShirtCounts = {}; let totalTshirts = 0; 
 
-            // --- 1. যোগফল রাখার জন্য ভেরিয়েবল ---
-            let sumSpouse = 0;
-            let sumKidBelow = 0;
-            let sumKidAbove = 0;
-            let sumTotalParticipants = 0;
-            let sumTotalAmount = 0;
-            
-            // টি-শার্টের হিসাব
-            let tShirtCounts = {}; 
-            let totalTshirts = 0; // মোট কতটি টি-শার্ট, সেটা গোনার জন্য
-
-            // --- 2. Data Mapping & Calculation ---
             const excelData = users.map(u => {
                 let spouseCount = (u.guest_info && u.guest_info.spouse && u.guest_info.spouse !== "No") ? 1 : 0;
-                
-                let kidBelowCount = 0;
-                if(u.guest_info && u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
-                    let match = u.guest_info.kid_below.match(/\((\d+)\)/);
-                    kidBelowCount = match ? parseInt(match[1]) : 1;
-                }
-
-                let kidAboveCount = 0;
-                if(u.guest_info && u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
-                    let match = u.guest_info.kid_above.match(/\((\d+)\)/);
-                    kidAboveCount = match ? parseInt(match[1]) : 1;
-                }
-
+                let kidBelowCount = 0; if(u.guest_info && u.guest_info.kid_below && u.guest_info.kid_below !== "No") { let match = u.guest_info.kid_below.match(/\((\d+)\)/); kidBelowCount = match ? parseInt(match[1]) : 1; }
+                let kidAboveCount = 0; if(u.guest_info && u.guest_info.kid_above && u.guest_info.kid_above !== "No") { let match = u.guest_info.kid_above.match(/\((\d+)\)/); kidAboveCount = match ? parseInt(match[1]) : 1; }
                 let totalParticipants = 1 + spouseCount + kidBelowCount + kidAboveCount;
-                let amount = parseInt(u.total_amount) || 0;
-                let tSize = u.tshirt ? u.tshirt.trim().toUpperCase() : "";
+                let amount = parseInt(u.total_amount) || 0; let tSize = u.tshirt ? u.tshirt.trim().toUpperCase() : "";
 
-                // মেইন যোগফল
-                sumSpouse += spouseCount;
-                sumKidBelow += kidBelowCount;
-                sumKidAbove += kidAboveCount;
-                sumTotalParticipants += totalParticipants;
-                sumTotalAmount += amount;
+                sumSpouse += spouseCount; sumKidBelow += kidBelowCount; sumKidAbove += kidAboveCount; sumTotalParticipants += totalParticipants; sumTotalAmount += amount;
+                if(tSize && tSize !== "N/A" && tSize !== "" && tSize !== "-") { tShirtCounts[tSize] = (tShirtCounts[tSize] || 0) + 1; totalTshirts++; }
 
-                // **টি-শার্ট গোনা এবং মোট সংখ্যা বের করা**
-                if(tSize && tSize !== "N/A" && tSize !== "" && tSize !== "-") {
-                    tShirtCounts[tSize] = (tShirtCounts[tSize] || 0) + 1;
-                    totalTshirts++; // এখানে মোট টি-শার্টের সংখ্যা ১ করে বাড়ছে
-                }
-
-                return {
-                    "SL": u.serial_number || "",
-                    "Name": u.name,
-                    "SSC Batch": u.batch,
-                    "Cell No": u.phone,
-                    "Alternative Cell No": u.alt_phone || "",
-                    "No of Spouse": spouseCount,
-                    "No of Below 5 Years Kid": kidBelowCount,
-                    "No of Above 5 Years Kid": kidAboveCount,
-                    "Total Participants": totalParticipants,
-                    "Total Amount": amount,
-                    "T-Shirt Size": u.tshirt || ""
-                };
+                return { "SL": u.serial_number || "", "Name": u.name, "SSC Batch": u.batch, "Cell No": u.phone, "Alternative Cell No": u.alt_phone || "", "No of Spouse": spouseCount, "No of Below 5 Years Kid": kidBelowCount, "No of Above 5 Years Kid": kidAboveCount, "Total Participants": totalParticipants, "Total Amount": amount, "T-Shirt Size": u.tshirt || "" };
             });
 
-            // --- 3. টি-শার্টের সামারি টেক্সট তৈরি করা ---
-            // আলাদা সাইজের লিস্ট বানানো
-            let tShirtSummaryText = Object.entries(tShirtCounts)
-                .map(([size, count]) => `${size}: ${count}`)
-                .join(", ");
-            
-            // **শেষে মোট যোগফল যুক্ত করা হচ্ছে (যেমন: = 9)**
-            if(totalTshirts > 0) {
-                tShirtSummaryText += ` = ${totalTshirts}`;
-            }
+            let tShirtSummaryText = Object.entries(tShirtCounts).map(([size, count]) => `${size}: ${count}`).join(", ");
+            if(totalTshirts > 0) { tShirtSummaryText += ` = ${totalTshirts}`; }
 
-            // --- 4. Total Row ---
-            const totalRow = {
-                "SL": "",
-                "Name": "",
-                "SSC Batch": "",
-                "Cell No": "",
-                "Alternative Cell No": "Total =", 
-                "No of Spouse": sumSpouse,
-                "No of Below 5 Years Kid": sumKidBelow,
-                "No of Above 5 Years Kid": sumKidAbove,
-                "Total Participants": sumTotalParticipants,
-                "Total Amount": sumTotalAmount,
-                "T-Shirt Size": tShirtSummaryText // এখানে আউটপুট হবে: "L: 2, XL: 4... = 9"
-            };
-
+            const totalRow = { "SL": "", "Name": "", "SSC Batch": "", "Cell No": "", "Alternative Cell No": "Total =", "No of Spouse": sumSpouse, "No of Below 5 Years Kid": sumKidBelow, "No of Above 5 Years Kid": sumKidAbove, "Total Participants": sumTotalParticipants, "Total Amount": sumTotalAmount, "T-Shirt Size": tShirtSummaryText };
             excelData.push(totalRow);
 
-            // Create Worksheet
             const ws = XLSX.utils.json_to_sheet(excelData);
-            
-            const wscols = [
-                {wch:5}, {wch:25}, {wch:10}, {wch:15}, {wch:15},
-                {wch:12}, {wch:20}, {wch:20}, {wch:15}, {wch:12}, {wch:30} // কলাম চওড়া করা হলো
-            ];
+            const wscols = [ {wch:5}, {wch:25}, {wch:10}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:20}, {wch:15}, {wch:12}, {wch:30} ];
             ws['!cols'] = wscols;
 
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Participants List");
-
-            // Binary Download Code
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Participants List");
             const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
 
-            function s2ab(s) {
-                const buf = new ArrayBuffer(s.length);
-                const view = new Uint8Array(buf);
-                for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-                return buf;
-            }
+            function s2ab(s) { const buf = new ArrayBuffer(s.length); const view = new Uint8Array(buf); for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; return buf; }
 
-            const blob = new Blob([s2ab(wbout)], {type: "application/octet-stream"});
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            document.body.appendChild(a);
-            a.href = url;
-            a.download = "Get_Together_Participants_List.xlsx";
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            const blob = new Blob([s2ab(wbout)], {type: "application/octet-stream"}); const url = window.URL.createObjectURL(blob); const a = document.createElement("a"); document.body.appendChild(a); a.href = url; a.download = "Get_Together_Participants_List.xlsx"; a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
         }
 
-        // --- PDF ---
+        window.downloadRegisteredExcel = function() {
+            const users = [...allData];
+            users.sort((a, b) => a.batch - b.batch || a.name.localeCompare(b.name));
+            if(users.length === 0) { alert("No users to download."); return; }
+            const excelData = users.map(u => {
+                return { "Status": u.payment_status, "Name": u.name, "Batch": u.batch, "Phone": u.phone, "Amount": u.total_amount || 0, "Address": u.address || "" };
+            });
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "All Registered List");
+            XLSX.writeFile(wb, "All_Registered_Users.xlsx");
+        }
+
         window.downloadBatchPDF = function() {
             if (!currentViewBatch) return;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('l', 'mm', 'a4'); 
-
+            const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); 
             const users = allData.filter(u => u.batch == currentViewBatch && u.payment_status === "Approved");
             users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
 
-            doc.setFontSize(18);
-            doc.text(`Batch ${currentViewBatch} - Reunion 2026 Approved List`, 14, 15);
-            doc.setFontSize(11);
-            doc.text(`Total Students: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
+            doc.setFontSize(18); doc.text(`Batch ${currentViewBatch} - Reunion 2026 Approved List`, 14, 15);
+            doc.setFontSize(11); doc.text(`Total Students: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
 
             const rows = users.map((u, index) => {
                 let guestStr = "None";
@@ -1320,219 +1143,46 @@
                     if(u.guest_info.kid_below !== "No") parts.push(`Below 5 Years: ${u.guest_info.kid_below}`);
                     if(parts.length > 0) guestStr = parts.join("\n");
                 }
-                
-                let phoneDisplay = u.phone;
-                if(u.alt_phone) phoneDisplay += "\n(Alt: " + u.alt_phone + ")";
-
-                return [
-                    index + 1,               
-                    u.serial_number || "-",  
-                    u.name,                  
-                    phoneDisplay, 
-                    u.address || "-",        
-                    u.tshirt || "N/A", 
-                    guestStr,                
-                    u.total_amount + " Tk"   
-                ];
+                let phoneDisplay = u.phone; if(u.alt_phone) phoneDisplay += "\n(Alt: " + u.alt_phone + ")";
+                return [ index + 1, u.serial_number || "-", u.name, phoneDisplay, u.address || "-", u.tshirt || "N/A", guestStr, u.total_amount + " Tk" ];
             });
 
-            doc.autoTable({
-                head: [['#', 'Global SL', 'Name', 'Phone', 'Address', 'T-Shirt', 'Guest Info', 'Amount']],
-                body: rows,
-                startY: 28,
-                theme: 'grid',
-                styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' },
-                headStyles: { fillColor: [44, 62, 80], fontSize: 11, fontStyle: 'bold' },
-                columnStyles: {
-                    0: { cellWidth: 10 }, 
-                    1: { cellWidth: 18 }, 
-                    2: { cellWidth: 30 }, 
-                    3: { cellWidth: 30 }, 
-                    4: { cellWidth: 30 }, 
-                    5: { cellWidth: 15 }, 
-                    6: { cellWidth: 40 }, 
-                    7: { cellWidth: 20 }  
-                }
-            });
-
+            doc.autoTable({ head: [['#', 'Global SL', 'Name', 'Phone', 'Address', 'T-Shirt', 'Guest Info', 'Amount']], body: rows, startY: 28, theme: 'grid', styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' }, headStyles: { fillColor: [44, 62, 80], fontSize: 11, fontStyle: 'bold' }, columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 18 }, 2: { cellWidth: 30 }, 3: { cellWidth: 30 }, 4: { cellWidth: 30 }, 5: { cellWidth: 15 }, 6: { cellWidth: 40 }, 7: { cellWidth: 20 } } });
             doc.save(`Batch_${currentViewBatch}_Full_List.pdf`);
         }
 
-        // এই ফাংশনটি সম্পূর্ণ রিপ্লেস করুন
-window.openProfile = function(id, fromRegistered = false) {
-    selectedUserId = id;
-    const u = allData.find(x => x.id === id);
-    selectedUserStatus = u.payment_status;
+        window.downloadRegisteredBatchPDF = function() {
+            if (!currentRegViewBatch) return;
+            const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); 
+            const users = allData.filter(u => u.batch == currentRegViewBatch);
+            users.sort((a, b) => { if (a.payment_status === "Approved" && b.payment_status !== "Approved") return -1; if (a.payment_status !== "Approved" && b.payment_status === "Approved") return 1; return 0; });
 
-    document.getElementById('mPhoto').src = u.photo;
-    document.getElementById('mName').innerText = u.name;
-    document.getElementById('mBatch').innerText = "Batch: " + u.batch;
-    document.getElementById('mPhone').innerText = u.phone;
-    
-    // SAVE IMAGE BUTTON LOGIC
-    const saveBtn = document.getElementById('btnSaveImg');
-    if (saveBtn) {
-        if (u.payment_status === "Approved") {
-            saveBtn.style.display = 'flex'; 
-        } else {
-            saveBtn.style.display = 'none';
-        }
-    }
+            doc.setFontSize(18); doc.text(`Batch ${currentRegViewBatch} - All Registered List`, 14, 15);
+            doc.setFontSize(11); doc.text(`Total: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
 
-    if(u.alt_phone) {
-        document.getElementById('rowAltPhone').style.display = 'flex';
-        document.getElementById('mAltPhone').innerText = u.alt_phone;
-    } else {
-        document.getElementById('rowAltPhone').style.display = 'none';
-    }
+            const rows = users.map((u, index) => {
+                return [ index + 1, u.payment_status, u.name, u.phone, u.address || "-", (u.total_amount || 0) + " Tk" ];
+            });
 
-    document.getElementById('mAddress').innerText = u.address || "N/A";
-    document.getElementById('mTshirt').innerText = u.tshirt || "N/A";
-    document.getElementById('mMethod').innerText = u.payment_method || "N/A";
-    
-    document.getElementById('mSender').innerText = u.sender_number || "N/A";
-    document.getElementById('mAmount').innerText = (u.total_amount || 0) + " ৳";
-
-    const btnDiv = document.getElementById('actionBtns');
-    const slBadge = document.getElementById('mSlNo');
-    const mainBtn = document.getElementById('btnApproveText');
-
-    // --- DYNAMIC BUTTON LOGIC (UPDATED) --- 
-    
-    // যদি Registered ট্যাব থেকে আসা হয় (fromRegistered = true) অথবা ইউজার Approved থাকে
-    // তাহলে বাটনগুলো হাইড করে দিবে।
-    if(fromRegistered === true || u.payment_status === "Approved") {
-        btnDiv.style.display = 'none'; // বাটন হাইড
-        
-        if(u.payment_status === "Approved") {
-            slBadge.style.display = 'block';
-            slBadge.innerText = "SL: #" + (u.serial_number || "N/A");
-        } else {
-            slBadge.style.display = 'none';
-        }
-    } else {
-        // Pending বা Review ট্যাব থেকে আসলে বাটন দেখাবে
-        btnDiv.style.display = 'flex';
-        slBadge.style.display = 'none';
-        
-        if (u.payment_status === "Submitted" || u.payment_status === "Pending Approval") {
-            mainBtn.innerHTML = 'Review <i class="fas fa-check"></i>';
-        } else if (u.payment_status === "Verified") {
-            mainBtn.innerHTML = 'Final Approve <i class="fas fa-check-double"></i>';
-        } else {
-            mainBtn.innerHTML = 'Move to Review <i class="fas fa-check"></i>';
-        }
-    }
-
-    const guestSec = document.getElementById('guestSection');
-    let hasGuest = false;
-
-    document.getElementById('rowSpouse').style.display = 'none';
-    document.getElementById('rowKidAbove').style.display = 'none';
-    document.getElementById('rowKidBelow').style.display = 'none';
-
-    if(u.guest_info) {
-        if(u.guest_info.spouse && u.guest_info.spouse !== "No") {
-            document.getElementById('rowSpouse').style.display = 'flex';
-            document.getElementById('mSpouse').innerText = u.guest_info.spouse;
-            hasGuest = true;
-        }
-        if(u.guest_info.kid_above && u.guest_info.kid_above !== "No") {
-            document.getElementById('rowKidAbove').style.display = 'flex';
-            document.getElementById('mKidAbove').innerText = u.guest_info.kid_above;
-            hasGuest = true;
-        }
-        if(u.guest_info.kid_below && u.guest_info.kid_below !== "No") {
-            document.getElementById('rowKidBelow').style.display = 'flex';
-            document.getElementById('mKidBelow').innerText = u.guest_info.kid_below;
-            hasGuest = true;
-        }
-    }
-    guestSec.style.display = hasGuest ? 'block' : 'none';
-
-    document.getElementById('profileModal').style.display = 'flex';
-}
-        window.closeModal = function() { document.getElementById('profileModal').style.display = 'none'; }
-
-        // --- UPDATED PROCESS LOGIC ---
-        window.processUser = async function() {
-            // Logic based on current status
-            if (selectedUserStatus === "Submitted" || selectedUserStatus === "Pending Approval" || selectedUserStatus === "New" || selectedUserStatus === "Rejected") {
-                // Step 1: Pending -> Verified (Review List)
-                if(!confirm("Send this user to Final Review List?")) return;
-                try {
-                    await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Verified" });
-                    alert("User sent to Review list!");
-                    closeModal();
-                } catch(e) { alert("Error: " + e.message); }
-
-            } else if (selectedUserStatus === "Verified") {
-                // Step 2: Verified -> Approved (Final)
-                if(!confirm("Final Approve this user? This will generate Serial Number.")) return;
-                try {
-                    const q = query(collection(db, "students"), where("payment_status", "==", "Approved"));
-                    const snapshot = await getCountFromServer(q);
-                    const newSL = snapshot.data().count + 1;
-
-                    await updateDoc(doc(db, "students", selectedUserId), {
-                        payment_status: "Approved",
-                        serial_number: newSL
-                    });
-                    alert("Approved Successfully! SL: " + newSL);
-                    closeModal();
-                } catch(e) { alert("Error: " + e.message); }
-            }
+            doc.autoTable({ head: [['#', 'Status', 'Name', 'Phone', 'Address', 'Amount']], body: rows, startY: 28, theme: 'grid', styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' }, headStyles: { fillColor: [102, 126, 234], fontSize: 11, fontStyle: 'bold' } });
+            doc.save(`Batch_${currentRegViewBatch}_Registered_List.pdf`);
         }
 
-        window.rejectUser = async function() {
-            if(!confirm("Reject request?")) return;
-            try {
-                await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Rejected" });
-                alert("Rejected!"); closeModal();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.switchTab = function(id, el) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        }
         window.downloadProfileImage = async function() {
-    const img = document.getElementById('mPhoto');
-    const imageUrl = img.src;
-    const userName = document.getElementById('mName').innerText || 'User';
-    const btn = document.getElementById('btnSaveImg');
-
-    if (!imageUrl) return;
-
-    // লোডিং ইফেক্ট
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-    try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = `${userName}_Profile.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-        
-        // সাকসেস মেসেজ
-        btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
-        setTimeout(() => btn.innerHTML = originalText, 2000);
-
-    } catch (error) {
-        // যদি সরাসরি ডাউনলোড না হয়, নতুন ট্যাবে ওপেন হবে
-        window.open(imageUrl, '_blank');
-        btn.innerHTML = originalText;
-    }
-}
+            const img = document.getElementById('mPhoto');
+            const imageUrl = img.src;
+            const userName = document.getElementById('mName').innerText || 'User';
+            const btn = document.getElementById('btnSaveImg');
+            if (!imageUrl) return;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            try {
+                const response = await fetch(imageUrl); const blob = await response.blob(); const blobUrl = window.URL.createObjectURL(blob);
+                const link = document.createElement('a'); link.href = blobUrl; link.download = `${userName}_Profile.jpg`;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link); window.URL.revokeObjectURL(blobUrl);
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved!'; setTimeout(() => btn.innerHTML = originalText, 2000);
+            } catch (error) { window.open(imageUrl, '_blank'); btn.innerHTML = originalText; }
+        }
     </script>
 </body>
 </html>
