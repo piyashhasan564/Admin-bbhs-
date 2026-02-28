@@ -376,8 +376,8 @@
         <div class="top-header">
             <h3>Admin Panel</h3>
             <div class="header-actions">
-                <!-- ADDED REFRESH BUTTON -->
-                <button class="logout-btn" style="background: linear-gradient(to right, #1cb5e0, #000851); margin-right: 5px;" onclick="fetchDataManual()">
+                <!-- REFRESH BUTTON (CONTEXT AWARE REFRESH) -->
+                <button class="logout-btn" style="background: linear-gradient(to right, #1cb5e0, #000851); margin-right: 5px;" onclick="fetchDataManual(true)">
                     <i id="refreshIcon" class="fas fa-sync-alt"></i> Refresh
                 </button>
                 <button class="logout-btn" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -469,7 +469,6 @@
             <div class="approved-header">
                 <h3>Approved Batches</h3>
                 <div style="display:flex; gap:10px;">
-                    <!-- GLOBAL EXCEL BUTTON ADDED HERE -->
                     <button onclick="downloadGlobalExcel()" class="excel-btn"><i class="fas fa-file-excel"></i> Excel</button>
                     <input type="text" id="searchApproved" class="search-approved" placeholder="Search Global..." onkeyup="searchApprovedUsers()">
                 </div>
@@ -556,7 +555,6 @@
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-home"></i><span>Pending</span></div>
             <div class="nav-item" onclick="switchTab('reviewSection', this)"><i class="fas fa-clipboard-check"></i><span>Review</span></div>
-            <!-- NEW REGISTERED TAB -->
             <div class="nav-item" onclick="switchTab('registeredSection', this)"><i class="fas fa-users"></i><span>Registered</span></div>
             <div class="nav-item" onclick="switchTab('batches', this)"><i class="fas fa-check-circle"></i><span>Approved</span></div>
             <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i><span>Setting</span></div>
@@ -568,17 +566,12 @@
                 <span class="close-modal" onclick="closeModal()">&times;</span>
                 <div class="profile-header">
                     <div class="sl-badge" id="mSlNo">SL: #001</div>
-                    
-                    <!-- ইমেজ এবং বাটন কন্টেইনার -->
                     <div class="profile-img-container">
                         <img id="mPhoto" class="profile-pic" src="" alt="User Photo">
-                        
-                        <!-- আইডি "btnSaveImg" এবং স্টাইল "display:none" দিয়ে রাখা হলো -->
                         <button id="btnSaveImg" class="save-img-btn" onclick="downloadProfileImage()" style="display:none;">
                             <i class="fas fa-download"></i> Save Image
                         </button>
                     </div>
-
                     <h2 class="profile-name" id="mName">User Name</h2>
                     <span class="profile-batch" id="mBatch">Batch: 2000</span>
                 </div>
@@ -588,12 +581,10 @@
                     <div class="info-line"><span><i class="fas fa-map-marker-alt"></i> Address:</span> <strong id="mAddress">--</strong></div>
                     <div class="info-line"><span><i class="fas fa-tshirt"></i> T-Shirt:</span> <strong id="mTshirt" style="color:#667eea; font-size:15px;">--</strong></div>
                     <div class="info-line"><span><i class="fas fa-wallet"></i> Method:</span> <strong id="mMethod" style="color:#3498db;">--</strong></div>
-                    
                     <div class="info-line" style="align-items:center;">
                         <span><i class="fas fa-paper-plane"></i> Sender No:</span> 
                         <strong id="mSender" class="sender-highlight">--</strong>
                     </div>
-
                     <div class="info-line"><span><i class="fas fa-coins"></i> Total Amount:</span> <strong id="mAmount" style="color:#27ae60; font-size:16px;">--</strong></div>
                     
                     <div id="guestSection" class="guest-section">
@@ -615,7 +606,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, updateDoc, getDocs, getDoc, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, updateDoc, getDocs, getDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB-n-SgnGwn1P9b-1Xkv3S5QM4U1zHa5nQ",
@@ -630,7 +621,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let allData = [];
+        let allData =[];
         let selectedUserId = null;
         let selectedUserStatus = null;
         let paymentMethods = {};
@@ -638,8 +629,14 @@
         let currentRegViewBatch = null;
         
         // --- SMART CACHE VARIABLES (QUOTA SAVER) ---
-        let lastFetchTime = 0;
         const CACHE_DURATION = 120000; // 2 Minutes in milliseconds
+        let cacheTimestamps = {
+            all: 0,
+            dashboard: 0,
+            reviewSection: 0,
+            registeredSection: 0,
+            batches: 0
+        };
 
         // --- GLOBAL ERROR HANDLER ---
         window.handleFirebaseError = function(error) {
@@ -662,6 +659,7 @@
             if (user) {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('adminPanelContent').style.display = 'block';
+                // প্রথমবার লগইন করলে ফোর্স রিলোড করে সব ডাটা আনবে 
                 fetchDataManual(true); 
                 loadAdminSettings();
             } else {
@@ -707,7 +705,7 @@
         function renderMethodsList() {
             const container = document.getElementById('methodsListContainer');
             container.innerHTML = "";
-            for (const [name, val] of Object.entries(paymentMethods)) {
+            for (const[name, val] of Object.entries(paymentMethods)) {
                 container.innerHTML += `<div class="method-list-item"><div style="font-weight:700; font-size:14px; color:#444;">${name}</div><i class="fas fa-trash-alt del-btn" onclick="deleteMethod('${name}')"></i></div>`;
             }
         }
@@ -728,32 +726,76 @@
             try { await setDoc(doc(db, "config", "fees"), data, { merge: true }); alert("Fee Updated!"); } catch (e) { handleFirebaseError(e); }
         }
 
-        // --- MANUAL DATA FETCH (QUOTA SAVER EDITION) ---
-        window.fetchDataManual = async function(forceRefresh = true) {
-            const btnIcon = document.getElementById('refreshIcon');
-            const now = Date.now();
+        // --- FILTERED FETCH DATA (SMART TAB LOADING, CACHE & MERGING) ---
+        window.fetchTabSpecificData = async function(tabId, forceRefresh = false) {
+            if (tabId === 'settings') return; // Settings ট্যাবের জন্য ইউজার ডাটা কল করার দরকার নেই
 
-            if (!forceRefresh && allData.length > 0 && (now - lastFetchTime < CACHE_DURATION)) {
-                console.log("Using Cached Data (Quota Saved)");
-                reRenderAllTables(); 
-                return;
+            const now = Date.now();
+            const btnIcon = document.getElementById('refreshIcon');
+
+            // ১. গ্লোবাল ক্যাশ চেক (যদি কিছুক্ষণ আগেই 'all' লোড হয়ে থাকে)
+            if (!forceRefresh && (now - cacheTimestamps.all < CACHE_DURATION)) {
+                reRenderAllTables();
+                return; // ২ মিনিটের আগে হলে কোনো মেসেজ বা রিলোড হবে না
+            }
+
+            // ২. ট্যাব-স্পেসিফিক ক্যাশ চেক
+            if (!forceRefresh && (now - cacheTimestamps[tabId] < CACHE_DURATION)) {
+                reRenderAllTables();
+                return; // ২ মিনিটের আগে হলে কোনো মেসেজ বা রিলোড হবে না
             }
 
             if(btnIcon) btnIcon.className = "fas fa-spinner fa-spin";
             
             try {
-                const querySnapshot = await getDocs(collection(db, "students"));
+                let q;
+                const studentsRef = collection(db, "students");
+
+                // ৩. ট্যাব অনুযায়ী কোয়েরি ফিল্টার (Quota কমানোর জাদুকরী লজিক)
+                if (tabId === 'dashboard') {
+                    q = query(studentsRef, where("payment_status", "in",["Submitted", "Pending Approval", "New"]));
+                } else if (tabId === 'reviewSection') {
+                    q = query(studentsRef, where("payment_status", "==", "Verified"));
+                } else if (tabId === 'batches') {
+                    q = query(studentsRef, where("payment_status", "==", "Approved"));
+                } else {
+                    q = query(studentsRef); // 'registeredSection' বা 'all' এর জন্য সবাই
+                }
+
+                const querySnapshot = await getDocs(q);
                 
-                allData = [];
-                let totalMoney = 0;
-                let paidUsers = 0;
-                let totalGuests = 0;
+                // ৪. Smart Merging (আগের ডাটা সেভ রেখে নতুন ডাটা মার্জ করা)
+                if (tabId === 'dashboard') {
+                    allData = allData.filter(d => !["Submitted", "Pending Approval", "New"].includes(d.payment_status));
+                } else if (tabId === 'reviewSection') {
+                    allData = allData.filter(d => d.payment_status !== "Verified");
+                } else if (tabId === 'batches') {
+                    allData = allData.filter(d => d.payment_status !== "Approved");
+                } else {
+                    allData =[]; // Full reload
+                }
 
                 querySnapshot.forEach(doc => {
                     let d = doc.data();
                     d.id = doc.id;
-                    allData.push(d);
-                    
+                    allData.push(d); // নতুন ফিল্টার করা ডাটা যুক্ত হলো (আগের ডাটাও সুরক্ষিত থাকলো)
+                });
+
+                // ৫. ক্যাশ টাইম আপডেট
+                cacheTimestamps[tabId] = now;
+                if (tabId === 'registeredSection' || tabId === 'all') {
+                    cacheTimestamps.all = now;
+                    cacheTimestamps.dashboard = now;
+                    cacheTimestamps.reviewSection = now;
+                    cacheTimestamps.batches = now;
+                }
+
+                // ৬. স্ট্যাটাস রিক্যালকুলেট (সব ডাটা থেকে - তাই জিরো হবে না)
+                let totalMoney = 0;
+                let paidUsers = 0;
+                let totalGuests = 0;
+                
+                allData.forEach(d => {
                     if(d.payment_status === "Approved") {
                         totalMoney += (parseInt(d.total_amount) || 0);
                         paidUsers++;
@@ -761,13 +803,12 @@
                     }
                 });
 
-                lastFetchTime = Date.now(); 
-
                 updateStats(paidUsers, totalMoney, totalGuests);
                 reRenderAllTables();
                 
                 if(btnIcon) btnIcon.className = "fas fa-sync-alt";
                 
+                // ৭. শুধু যখন ডাটাবেজে হিট করে নতুন ডাটা আনবে, তখনই মেসেজ দেখাবে!
                 const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
                 Toast.fire({ icon: 'success', title: 'Data Loaded Successfully' });
 
@@ -775,6 +816,26 @@
                 if(btnIcon) btnIcon.className = "fas fa-exclamation-triangle";
                 handleFirebaseError(error);
             }
+        }
+
+        // --- CONTEXT-AWARE REFRESH (আপনার চাহিদামতো) ---
+        window.fetchDataManual = async function(forceRefresh = true) {
+            let activeTab = 'all'; // Default
+            const activeSection = document.querySelector('.section.active');
+            
+            if (activeSection) {
+                if (activeSection.id === 'batches') {
+                    activeTab = 'batches'; // শুধু Approved রিলোড হবে
+                } else if (activeSection.id === 'reviewSection') {
+                    activeTab = 'reviewSection'; // শুধু Review রিলোড হবে
+                } else if (activeSection.id === 'dashboard') {
+                    activeTab = 'all'; // Pending ট্যাবে থাকলে Full Database Reload হবে
+                } else if (activeSection.id === 'registeredSection') {
+                    activeTab = 'all'; // Registered ট্যাবে থাকলে Full Database Reload হবে
+                }
+            }
+            
+            await window.fetchTabSpecificData(activeTab, forceRefresh);
         }
 
         function reRenderAllTables() {
@@ -848,7 +909,7 @@
             });
         }
 
-        // --- UPDATED PROCESS LOGIC (LOCAL UPDATE) ---
+        // --- LOCAL UPDATE LOGIC (SERVER RELOAD ছাড়াই) ---
         window.processUser = async function() {
             if (["Submitted", "Pending Approval", "New", "Rejected"].includes(selectedUserStatus)) {
                 const result = await Swal.fire({ title: 'Verify User?', text: "Send to Final Review?", icon: 'question', showCancelButton: true, confirmButtonText: 'Yes, Verify' });
@@ -856,6 +917,7 @@
                     try {
                         await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Verified" });
                         
+                        // লোকাল আপডেট (সার্ভার রিলোড ছাড়াই)
                         const idx = allData.findIndex(u => u.id === selectedUserId);
                         if(idx > -1) { allData[idx].payment_status = "Verified"; }
 
@@ -874,6 +936,7 @@
 
                         await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Approved", serial_number: newSL });
 
+                        // লোকাল আপডেট (সার্ভার রিলোড ছাড়াই)
                         const idx = allData.findIndex(u => u.id === selectedUserId);
                         if(idx > -1) { 
                             allData[idx].payment_status = "Approved"; 
@@ -901,6 +964,7 @@
                 try {
                     await updateDoc(doc(db, "students", selectedUserId), { payment_status: "Rejected" });
                     
+                    // লোকাল আপডেট
                     const idx = allData.findIndex(u => u.id === selectedUserId);
                     if(idx > -1) { allData[idx].payment_status = "Rejected"; }
 
@@ -916,7 +980,9 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            fetchDataManual(false);
+            
+            // ট্যাব বদলানোর সময় নতুন লজিক কল হবে (ক্যাশ চেক করে ডাটা আনবে)
+            window.fetchTabSpecificData(id, false);
         }
 
         window.renderBatches = function() {
@@ -1073,7 +1139,7 @@
         }
         window.closeModal = function() { document.getElementById('profileModal').style.display = 'none'; }
 
-        // --- EXCEL & PDF FUNCTIONS (RESTORED FULLY) ---
+        // --- EXCEL & PDF FUNCTIONS ---
         window.downloadGlobalExcel = function() {
             const users = allData.filter(u => u.payment_status === "Approved");
             users.sort((a, b) => (a.serial_number || 0) - (b.serial_number || 0));
@@ -1102,7 +1168,7 @@
             excelData.push(totalRow);
 
             const ws = XLSX.utils.json_to_sheet(excelData);
-            const wscols = [ {wch:5}, {wch:25}, {wch:10}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:20}, {wch:15}, {wch:12}, {wch:30} ];
+            const wscols =[ {wch:5}, {wch:25}, {wch:10}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:20}, {wch:15}, {wch:12}, {wch:30} ];
             ws['!cols'] = wscols;
 
             const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Participants List");
@@ -1137,17 +1203,17 @@
             const rows = users.map((u, index) => {
                 let guestStr = "None";
                 if(u.guest_info) {
-                    let parts = [];
+                    let parts =[];
                     if(u.guest_info.spouse !== "No") parts.push(`Spouse: ${u.guest_info.spouse}`);
                     if(u.guest_info.kid_above !== "No") parts.push(`Above 5 Years: ${u.guest_info.kid_above}`);
                     if(u.guest_info.kid_below !== "No") parts.push(`Below 5 Years: ${u.guest_info.kid_below}`);
                     if(parts.length > 0) guestStr = parts.join("\n");
                 }
                 let phoneDisplay = u.phone; if(u.alt_phone) phoneDisplay += "\n(Alt: " + u.alt_phone + ")";
-                return [ index + 1, u.serial_number || "-", u.name, phoneDisplay, u.address || "-", u.tshirt || "N/A", guestStr, u.total_amount + " Tk" ];
+                return[ index + 1, u.serial_number || "-", u.name, phoneDisplay, u.address || "-", u.tshirt || "N/A", guestStr, u.total_amount + " Tk" ];
             });
 
-            doc.autoTable({ head: [['#', 'Global SL', 'Name', 'Phone', 'Address', 'T-Shirt', 'Guest Info', 'Amount']], body: rows, startY: 28, theme: 'grid', styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' }, headStyles: { fillColor: [44, 62, 80], fontSize: 11, fontStyle: 'bold' }, columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 18 }, 2: { cellWidth: 30 }, 3: { cellWidth: 30 }, 4: { cellWidth: 30 }, 5: { cellWidth: 15 }, 6: { cellWidth: 40 }, 7: { cellWidth: 20 } } });
+            doc.autoTable({ head: [['#', 'Global SL', 'Name', 'Phone', 'Address', 'T-Shirt', 'Guest Info', 'Amount']], body: rows, startY: 28, theme: 'grid', styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' }, headStyles: { fillColor:[44, 62, 80], fontSize: 11, fontStyle: 'bold' }, columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 18 }, 2: { cellWidth: 30 }, 3: { cellWidth: 30 }, 4: { cellWidth: 30 }, 5: { cellWidth: 15 }, 6: { cellWidth: 40 }, 7: { cellWidth: 20 } } });
             doc.save(`Batch_${currentViewBatch}_Full_List.pdf`);
         }
 
@@ -1161,7 +1227,7 @@
             doc.setFontSize(11); doc.text(`Total: ${users.length} | Generated: ${new Date().toLocaleDateString()}`, 14, 22);
 
             const rows = users.map((u, index) => {
-                return [ index + 1, u.payment_status, u.name, u.phone, u.address || "-", (u.total_amount || 0) + " Tk" ];
+                return[ index + 1, u.payment_status, u.name, u.phone, u.address || "-", (u.total_amount || 0) + " Tk" ];
             });
 
             doc.autoTable({ head: [['#', 'Status', 'Name', 'Phone', 'Address', 'Amount']], body: rows, startY: 28, theme: 'grid', styles: { fontSize: 10, valign: 'middle', cellPadding: 3, overflow: 'linebreak' }, headStyles: { fillColor: [102, 126, 234], fontSize: 11, fontStyle: 'bold' } });
